@@ -9,7 +9,7 @@ import json
 import os
 import re
 import shutil
-from urllib.parse import quote, urlparse
+from urllib.parse import parse_qs, quote, urlparse
 
 
 PUBLISH_ROOT = Path(__file__).resolve().parent
@@ -1470,6 +1470,22 @@ def normalize_asset_key(value: str) -> str:
     return cleaned.lower()
 
 
+def infer_media_suffix(target: str) -> str:
+    parsed = urlparse(target)
+    suffix = Path(parsed.path).suffix.lower()
+    if suffix:
+        return suffix
+    query = parse_qs(parsed.query)
+    for key in ("format", "fm"):
+        values = query.get(key) or []
+        if not values:
+            continue
+        candidate = "." + values[0].lower().lstrip(".")
+        if candidate in ASSET_EXTENSIONS:
+            return candidate
+    return ""
+
+
 def strip_markdown(text: str) -> str:
     frontmatter, body = strip_frontmatter(text)
     _ = frontmatter
@@ -2122,7 +2138,7 @@ class MarkdownRenderer:
             parsed = urlparse(target)
             if parsed.scheme in {"http", "https", "mailto"}:
                 if is_image:
-                    suffix = Path(parsed.path).suffix.lower()
+                    suffix = infer_media_suffix(target)
                     return take_placeholder(self.render_media_embed(target, label or "image", suffix))
                 attrs = ' target="_blank" rel="noreferrer"' if parsed.scheme in {"http", "https"} else ""
                 return take_placeholder(f'<a href="{html.escape(target, quote=True)}"{attrs}>{html.escape(label)}</a>')
