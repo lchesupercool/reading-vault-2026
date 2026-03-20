@@ -523,6 +523,93 @@ samp {
 
 .article-meta {
   margin: 0 0 1.75em;
+  display: grid;
+  gap: 0.22rem;
+  line-height: 1.55;
+}
+
+.article-meta-line {
+  display: block;
+}
+
+.note-properties {
+  margin: 0 0 2.1em;
+}
+
+.note-properties-title {
+  margin: 0 0 1.1em;
+  font-size: 1.55em;
+  font-weight: 760;
+  border: 0;
+  padding: 0;
+}
+
+.note-properties-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.note-property-row {
+  display: grid;
+  grid-template-columns: 24px 180px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 16px;
+}
+
+.note-property-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-muted);
+}
+
+.note-property-icon svg {
+  width: 21px;
+  height: 21px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.note-property-name {
+  padding-top: 1px;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+.note-property-value {
+  min-width: 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.note-property-link {
+  word-break: break-all;
+}
+
+.note-property-list {
+  display: grid;
+  gap: 6px;
+}
+
+.note-property-empty {
+  color: var(--text-faint);
+}
+
+.note-property-tag {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 10px 8px 0;
+  padding: 0.18rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(138, 108, 255, 0.12);
+  color: var(--text-accent);
+  font-size: 0.95rem;
+  text-decoration: none;
 }
 
 .doc-body h1,
@@ -717,6 +804,33 @@ h2 {
   gap: 6px;
 }
 
+.doc-body .asset-embed {
+  display: block;
+}
+
+.doc-body img,
+.doc-body video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--background-modifier-border);
+}
+
+.doc-body audio {
+  display: block;
+  width: 100%;
+}
+
+.doc-body .asset-caption {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .entry-list {
   list-style: none;
   margin: 0 0 2em;
@@ -845,6 +959,15 @@ h2 {
 
   .page-header {
     font-size: 2em;
+  }
+
+  .note-property-row {
+    grid-template-columns: 24px minmax(0, 1fr);
+    row-gap: 6px;
+  }
+
+  .note-property-value {
+    grid-column: 2 / -1;
   }
 
   .site-footer {

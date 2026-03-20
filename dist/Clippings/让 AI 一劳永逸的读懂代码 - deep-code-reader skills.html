@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>让 AI 一劳永逸的读懂代码 - deep-code-reader skills · Reading Vault 2026</title>
-  <link rel="stylesheet" href="../assets/site.css?v=1773981936299222560">
+  <link rel="stylesheet" href="../assets/site.css?v=1773984184993216575">
 </head>
 <body class="theme-light page-doc" data-root-prefix="../">
   <div class="mobile-bar">
@@ -45,8 +45,7 @@
               
     <div class="breadcrumbs"><a href="../index.html">START HERE</a><span>/</span><a href="index.html">Clippings</a></div>
     <h1 class="page-header">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</h1>
-    <p class="article-summary">这两天养虾的时候针对很多架构级的痛点会通过给 OpenClaw 写扩展组件的方式解决，就需要深入研究它的源码和配置项。一开始我的做法也很普通，clone 一个 openclaw repo 后在里面打开一个 claude terminal，不...</p>
-    <div class="article-meta">Path: Clippings &nbsp;·&nbsp; Updated: 2026-03-20</div>
+    <div class="article-meta"><span class="article-meta-line">Author: 不难不易工程师的职能是解决问题，必要的时候写点代码</span><span class="article-meta-line">Source: <a href="https://zhuanlan.zhihu.com/p/2017925129099847145?utm_psn=2018119343309857882" target="_blank" rel="noreferrer">https://zhuanlan.zhihu.com/p/2017925129099847145?utm_psn=2018119343309857882</a></span></div>
     <div class="doc-body">
       <p>这两天养虾的时候针对很多架构级的痛点会通过给 OpenClaw 写扩展组件的方式解决，就需要深入研究它的源码和配置项。一开始我的做法也很普通，clone 一个 openclaw repo 后在里面打开一个 claude terminal，不断问他问题，让他帮忙一起扫读和精读代码，画架构图流程图，然后 /clear。</p>
 <p>这很容易让我发现： <strong>很多问题我是在反复问的，很多流程也是 openclaw 反复读的。</strong></p>
@@ -60,7 +59,7 @@
 <ul><li><strong>Agent A</strong> 负责读源码、写知识文档</li><li><strong>Agent B</strong> 也读源码，但看不到 A 写的文档——它的任务是根据代码出考题，附上标准答案</li><li><strong>Agent C</strong> 只看 A 写的文档，完全不碰源码——它来闭卷答题</li></ul>
 <p>然后对答案。C 答不上来的，说明 A 的文档有遗漏，打回去补充，B 再出新题，C 再考一次。最多三轮。</p>
 <p>其中&quot;对答案&quot;的正确性本身通过划定一些固定的答题事实点，让模型来进行判断是否合格。</p>
-<p>![](https://pica.zhimg.com/v2-ba9b2ce4325b57a3cb11c8e0113f3ca0_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pica.zhimg.com/v2-ba9b2ce4325b57a3cb11c8e0113f3ca0_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>ABC Loop</p>
 <p>有几个设计上的考虑值得提一下：</p>
 <p><strong>B 故意用弱模型（比如 Haiku）。</strong> 逻辑是：便宜的模型读代码会比较粗糙，测试下来更容易问出比较 general 一点的问题，不会陷入特别细的细节和特别深度的问题 -- 这也大致符合我们读陌生代码的需要，这样也比较省成本。</p>
@@ -82,18 +81,18 @@ cp -r deep-code-reader/deep-code-read ~/.claude/skills/</code></pre>
 /deep-code-read ./path/to/project ~/.claude/skills/</code></pre>
 <h3 id="实战体验">实战体验</h3>
 <p>我拿它实际阅读 openclaw 的过程</p>
-<p>![](https://pic3.zhimg.com/v2-934ceffc647715edad29ec21e4ccc83c_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pic3.zhimg.com/v2-934ceffc647715edad29ec21e4ccc83c_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>发完我就睡觉去了...</p>
 <p>第二天看了一下执行日志的大致过程:</p>
-<p>![](https://pic1.zhimg.com/v2-cb814d04b775d22491a59cbf1413d21e_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pic1.zhimg.com/v2-cb814d04b775d22491a59cbf1413d21e_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>模型按模块切分, 启动 subagents 精读</p>
-<p>![](https://pic2.zhimg.com/v2-457e329f81d2b05676697ed1b6030f67_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pic2.zhimg.com/v2-457e329f81d2b05676697ed1b6030f67_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>一轮 ABC 后全员不合格, 继续精读</p>
-<p>![](https://pic1.zhimg.com/v2-bd70761321dc6808e0c015175c96f732_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pic1.zhimg.com/v2-bd70761321dc6808e0c015175c96f732_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>第二轮修正</p>
-<p>![](https://picx.zhimg.com/v2-02098c89fdf01928630ebdafb367440b_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://picx.zhimg.com/v2-02098c89fdf01928630ebdafb367440b_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>第三轮后全部通过</p>
-<p>![](https://pic3.zhimg.com/v2-376c950af915d5cd90c1498b57ecc4ac_1440w.jpg)</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://pic3.zhimg.com/v2-376c950af915d5cd90c1498b57ecc4ac_1440w.jpg" alt="image" loading="lazy"></span></p>
 <p>最后总结的大致问题</p>
 <p>最后我试着问了他几个问题，篇幅原因打印了很多日志，就不贴截图了，直接把文字贴在下面，感受一下它的回答深度。我感觉还是不错的，基本回答了我想要的内容，或给我指出了精确的代码点位。</p>
 <pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>问：目前 openclaw 似乎在 channel 里有最大对话轮数显示, 是不是意味着当对话历史超过一定长度后,
@@ -366,7 +365,7 @@ cp -r deep-code-reader/deep-code-read ~/.claude/skills/</code></pre>
     </footer>
   </div>
   <div class="scrim"></div>
-  <script src="../assets/search-index.js?v=1773981936299506103"></script>
-  <script src="../assets/app.js?v=1773981936299398977"></script>
+  <script src="../assets/search-index.js?v=1773984184993496035"></script>
+  <script src="../assets/app.js?v=1773984184993387201"></script>
 </body>
 </html>

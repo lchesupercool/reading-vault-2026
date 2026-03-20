@@ -67,13 +67,37 @@ ASSET_EXTENSIONS = {
     ".wav",
 }
 
+IMAGE_EXTENSIONS = {".png", ".jpg", ".jpeg", ".gif", ".svg", ".webp"}
+VIDEO_EXTENSIONS = {".mp4", ".mov"}
+AUDIO_EXTENSIONS = {".mp3", ".wav"}
+
+PROPERTY_ORDER = [
+    "title",
+    "source",
+    "author",
+    "published",
+    "created",
+    "description",
+    "tags",
+]
+
+PROPERTY_LABELS = {
+    "title": "title",
+    "source": "source",
+    "author": "author",
+    "published": "published",
+    "created": "created",
+    "description": "description",
+    "tags": "tags",
+}
+
 LIST_ITEM_RE = re.compile(r"^(?P<indent>\s*)(?P<marker>(?:[-*+])|(?:\d+\.))\s+(?P<content>.*)$")
 HEADING_RE = re.compile(r"^\s{0,3}(#{1,6})\s+(.*?)\s*#*\s*$")
 HR_RE = re.compile(r"^\s*(?:-{3,}|\*{3,}|_{3,})\s*$")
 TABLE_SEPARATOR_RE = re.compile(r"^\s*\|?(?:\s*:?-{3,}:?\s*\|)+\s*:?-{3,}:?\s*\|?\s*$")
 INLINE_CODE_RE = re.compile(r"(`+)(.+?)\1")
 WIKI_LINK_RE = re.compile(r"(!)?\[\[([^\]|#]+)(?:#([^\]|]+))?(?:\|([^\]]+))?\]\]")
-MD_LINK_RE = re.compile(r"(!)?\[([^\]]+)\]\(([^)]+)\)")
+MD_LINK_RE = re.compile(r"(!)?\[([^\]]*)\]\(([^)]+)\)")
 BOLD_RE = re.compile(r"(\*\*|__)(.+?)\1")
 ITALIC_RE = re.compile(r"(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)")
 BASH_TOKEN_RE = re.compile(r"\s+|[^\s]+")
@@ -672,6 +696,93 @@ samp {
 
 .article-meta {
   margin: 0 0 1.75em;
+  display: grid;
+  gap: 0.22rem;
+  line-height: 1.55;
+}
+
+.article-meta-line {
+  display: block;
+}
+
+.note-properties {
+  margin: 0 0 2.1em;
+}
+
+.note-properties-title {
+  margin: 0 0 1.1em;
+  font-size: 1.55em;
+  font-weight: 760;
+  border: 0;
+  padding: 0;
+}
+
+.note-properties-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.note-property-row {
+  display: grid;
+  grid-template-columns: 24px 180px minmax(0, 1fr);
+  align-items: start;
+  column-gap: 16px;
+}
+
+.note-property-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  color: var(--text-muted);
+}
+
+.note-property-icon svg {
+  width: 21px;
+  height: 21px;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.note-property-name {
+  padding-top: 1px;
+  color: var(--text-muted);
+  font-size: 0.98rem;
+}
+
+.note-property-value {
+  min-width: 0;
+  font-size: 0.98rem;
+  line-height: 1.65;
+}
+
+.note-property-link {
+  word-break: break-all;
+}
+
+.note-property-list {
+  display: grid;
+  gap: 6px;
+}
+
+.note-property-empty {
+  color: var(--text-faint);
+}
+
+.note-property-tag {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 10px 8px 0;
+  padding: 0.18rem 0.78rem;
+  border-radius: 999px;
+  background: rgba(138, 108, 255, 0.12);
+  color: var(--text-accent);
+  font-size: 0.95rem;
+  text-decoration: none;
 }
 
 .doc-body h1,
@@ -866,6 +977,33 @@ h2 {
   gap: 6px;
 }
 
+.doc-body .asset-embed {
+  display: block;
+}
+
+.doc-body img,
+.doc-body video {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0;
+  border-radius: 10px;
+  border: 1px solid var(--background-modifier-border);
+}
+
+.doc-body audio {
+  display: block;
+  width: 100%;
+}
+
+.doc-body .asset-caption {
+  display: block;
+  margin-top: 0.55rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  text-align: center;
+}
+
 .entry-list {
   list-style: none;
   margin: 0 0 2em;
@@ -994,6 +1132,15 @@ h2 {
 
   .page-header {
     font-size: 2em;
+  }
+
+  .note-property-row {
+    grid-template-columns: 24px minmax(0, 1fr);
+    row-gap: 6px;
+  }
+
+  .note-property-value {
+    grid-column: 2 / -1;
   }
 
   .site-footer {
@@ -1211,6 +1358,7 @@ class Note:
     backlinks: list["Note"] = field(default_factory=list)
     mtime: float = 0.0
     date_label: str = ""
+    properties_html: str = ""
 
 
 @dataclass
@@ -1263,11 +1411,29 @@ def strip_frontmatter(text: str) -> tuple[dict[str, object], str]:
     for index in range(1, min(len(lines), 80)):
         if lines[index].strip() == "---":
             frontmatter: dict[str, object] = {}
+            current_key = ""
             for raw_line in lines[1:index]:
+                if not raw_line.strip():
+                    continue
+                stripped = raw_line.strip()
+                if stripped.startswith("#"):
+                    continue
+                if raw_line[:1].isspace() and stripped.startswith("- ") and current_key:
+                    entry = parse_scalar(stripped[2:].strip())
+                    existing = frontmatter.get(current_key, "")
+                    if isinstance(existing, list):
+                        existing.append(entry)
+                    elif existing in {"", None}:
+                        frontmatter[current_key] = [entry]
+                    else:
+                        frontmatter[current_key] = [existing, entry]
+                    continue
                 if ":" not in raw_line:
+                    current_key = ""
                     continue
                 key, value = raw_line.split(":", 1)
-                frontmatter[key.strip()] = parse_scalar(value.strip())
+                current_key = key.strip()
+                frontmatter[current_key] = parse_scalar(value.strip())
             body = "\n".join(lines[index + 1 :])
             return frontmatter, body
 
@@ -1293,6 +1459,13 @@ def normalize_key(value: str) -> str:
     cleaned = value.strip().replace("\\", "/")
     cleaned = cleaned.split("#", 1)[0]
     cleaned = cleaned.removesuffix(".md").removesuffix(".html")
+    cleaned = cleaned.strip("/")
+    return cleaned.lower()
+
+
+def normalize_asset_key(value: str) -> str:
+    cleaned = value.strip().replace("\\", "/")
+    cleaned = cleaned.split("#", 1)[0]
     cleaned = cleaned.strip("/")
     return cleaned.lower()
 
@@ -1361,7 +1534,26 @@ def slugify(text: str, used: set[str]) -> str:
     return candidate
 
 
-def resolve_local_asset(target: str, current_note: Note) -> Path | None:
+def build_asset_lookup(assets: list[Path]) -> dict[str, Path]:
+    asset_buckets: dict[str, list[Path]] = {}
+    for asset in assets:
+        rel = asset.relative_to(VAULT_ROOT)
+        aliases = {
+            normalize_asset_key(rel.as_posix()),
+            normalize_asset_key(rel.name),
+            normalize_asset_key(rel.stem),
+        }
+        for alias in aliases:
+            if alias:
+                asset_buckets.setdefault(alias, []).append(rel)
+    return {
+        alias: bucket[0]
+        for alias, bucket in asset_buckets.items()
+        if len(bucket) == 1
+    }
+
+
+def resolve_local_asset(target: str, current_note: Note, asset_lookup: dict[str, Path]) -> Path | None:
     clean_target = target.split("#", 1)[0].strip()
     if not clean_target or urlparse(clean_target).scheme:
         return None
@@ -1369,11 +1561,18 @@ def resolve_local_asset(target: str, current_note: Note) -> Path | None:
     try:
         rel = candidate.relative_to(VAULT_ROOT.resolve())
     except ValueError:
-        return None
-    local_path = VAULT_ROOT / rel
-    if not local_path.exists() or local_path.suffix.lower() not in ASSET_EXTENSIONS:
-        return None
-    return rel
+        rel = None
+    if rel is not None:
+        local_path = VAULT_ROOT / rel
+        if local_path.exists() and local_path.suffix.lower() in ASSET_EXTENSIONS:
+            return rel
+
+    if clean_target.startswith("/"):
+        prefixed = normalize_asset_key(clean_target.lstrip("/"))
+        if prefixed in asset_lookup:
+            return asset_lookup[prefixed]
+
+    return asset_lookup.get(normalize_asset_key(clean_target))
 
 
 def resolve_note_reference(target: str, current_note: Note | None, note_lookup: dict[str, Note], alias_lookup: dict[str, Note]) -> Note | None:
@@ -1398,15 +1597,162 @@ def resolve_note_reference(target: str, current_note: Note | None, note_lookup: 
 
 
 class MarkdownRenderer:
-    def __init__(self, note_lookup: dict[str, Note], alias_lookup: dict[str, Note]) -> None:
+    def __init__(self, note_lookup: dict[str, Note], alias_lookup: dict[str, Note], asset_lookup: dict[str, Path]) -> None:
         self.note_lookup = note_lookup
         self.alias_lookup = alias_lookup
+        self.asset_lookup = asset_lookup
 
-    def render(self, note: Note) -> tuple[str, list[Heading], set[str]]:
+    def render(self, note: Note) -> tuple[str, list[Heading], set[str], str]:
         used_anchors: set[str] = set()
         links_to: set[str] = set()
         html_body, headings = self.render_blocks(note.body_markdown.splitlines(), note, used_anchors, links_to, collect_headings=True)
-        return html_body, headings, links_to
+        properties_html = self.render_note_properties(note, links_to)
+        return html_body, headings, links_to, properties_html
+
+    @staticmethod
+    def property_icon_svg(key: str) -> str:
+        kind = key.lower()
+        if kind in {"published", "created", "date", "updated"}:
+            return (
+                '<svg viewBox="0 0 24 24" aria-hidden="true">'
+                '<rect x="3" y="4" width="18" height="17" rx="2"></rect>'
+                '<path d="M8 2v4M16 2v4M3 10h18"></path>'
+                "</svg>"
+            )
+        if kind in {"tags", "tag"}:
+            return (
+                '<svg viewBox="0 0 24 24" aria-hidden="true">'
+                '<path d="M20.59 13.41 11 3.83A2 2 0 0 0 9.59 3H4a1 1 0 0 0-1 1v5.59A2 2 0 0 0 3.83 11l9.58 9.59a2 2 0 0 0 2.83 0l4.35-4.35a2 2 0 0 0 0-2.83Z"></path>'
+                '<circle cx="7.5" cy="7.5" r="1.2"></circle>'
+                "</svg>"
+            )
+        if kind in {"source", "url", "link"}:
+            return (
+                '<svg viewBox="0 0 24 24" aria-hidden="true">'
+                '<path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11 4"></path>'
+                '<path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07L13 20"></path>'
+                "</svg>"
+            )
+        return (
+            '<svg viewBox="0 0 24 24" aria-hidden="true">'
+            '<path d="M5 7h14M5 12h14M5 17h14"></path>'
+            "</svg>"
+        )
+
+    @staticmethod
+    def property_sort_key(item: tuple[str, object]) -> tuple[int, str]:
+        key = item[0]
+        try:
+            return PROPERTY_ORDER.index(key), key
+        except ValueError:
+            return len(PROPERTY_ORDER), key
+
+    @staticmethod
+    def clean_property_values(value: object) -> list[object]:
+        if isinstance(value, list):
+            return [item for item in value if not (isinstance(item, str) and not item.strip())]
+        if isinstance(value, str) and not value.strip():
+            return []
+        if value is None:
+            return []
+        return [value]
+
+    def render_note_properties(self, note: Note, links_to: set[str]) -> str:
+        if not note.frontmatter:
+            return ""
+
+        property_items: list[tuple[str, object]] = [("title", note.title)]
+        property_items.extend(
+            (key, value)
+            for key, value in sorted(note.frontmatter.items(), key=self.property_sort_key)
+            if key not in {"title", "publish"}
+        )
+
+        rows: list[str] = []
+        for key, raw_value in property_items:
+            rows.append(
+                '<div class="note-property-row">'
+                f'<span class="note-property-icon">{self.property_icon_svg(key)}</span>'
+                f'<span class="note-property-name">{html.escape(PROPERTY_LABELS.get(key, key))}</span>'
+                f'<div class="note-property-value">{self.render_property_value(key, raw_value, note, links_to)}</div>'
+                "</div>"
+            )
+
+        return (
+            '<section class="note-properties">'
+            '<h2 class="note-properties-title">笔记属性</h2>'
+            '<div class="note-properties-grid">'
+            + "".join(rows)
+            + "</div></section>"
+        )
+
+    def render_property_value(self, key: str, value: object, note: Note, links_to: set[str]) -> str:
+        cleaned_values = self.clean_property_values(value)
+        if not cleaned_values:
+            return '<span class="note-property-empty">—</span>'
+
+        if key == "tags":
+            tags = []
+            for entry in cleaned_values:
+                tag_text = str(entry).strip().lstrip("#")
+                if tag_text:
+                    tags.append(f'<span class="note-property-tag">{html.escape(tag_text)}</span>')
+            return "".join(tags) if tags else '<span class="note-property-empty">—</span>'
+
+        if len(cleaned_values) == 1:
+            return self.render_property_scalar(str(cleaned_values[0]), note, links_to)
+
+        items = []
+        for entry in cleaned_values:
+            items.append(f'<div class="note-property-list-item">{self.render_property_scalar(str(entry), note, links_to)}</div>')
+        return '<div class="note-property-list">' + "".join(items) + "</div>"
+
+    def render_property_scalar(self, value: str, note: Note, links_to: set[str]) -> str:
+        stripped = value.strip()
+        wiki_match = WIKI_LINK_RE.fullmatch(stripped)
+        if wiki_match:
+            target = wiki_match.group(2)
+            label = wiki_match.group(4) or target
+            target_note = resolve_note_reference(target, note, self.note_lookup, self.alias_lookup)
+            if target_note is not None:
+                links_to.add(target_note.note_key)
+                href = relative_href(note.output_path, target_note.output_path)
+                return f'<a href="{href}">{html.escape(label)}</a>'
+            return html.escape(label)
+        parsed = urlparse(stripped)
+        if parsed.scheme in {"http", "https", "mailto"}:
+            attrs = ' target="_blank" rel="noreferrer"' if parsed.scheme in {"http", "https"} else ""
+            return f'<a class="note-property-link" href="{html.escape(stripped, quote=True)}"{attrs}>{html.escape(stripped)}</a>'
+        return self.render_inline(stripped, note, links_to)
+
+    @staticmethod
+    def render_media_embed(src: str, alt_text: str, suffix: str, *, caption: str = "") -> str:
+        escaped_src = html.escape(src, quote=True)
+        escaped_alt = html.escape(alt_text)
+        trimmed_caption = caption.strip()
+        caption_html = f'<span class="asset-caption">{html.escape(trimmed_caption)}</span>' if trimmed_caption else ""
+        if suffix in IMAGE_EXTENSIONS:
+            return (
+                '<span class="asset-embed asset-embed-image">'
+                f'<img class="doc-image" src="{escaped_src}" alt="{escaped_alt}" loading="lazy">'
+                f"{caption_html}"
+                "</span>"
+            )
+        if suffix in VIDEO_EXTENSIONS:
+            return (
+                '<span class="asset-embed asset-embed-video">'
+                f'<video controls preload="metadata" src="{escaped_src}"></video>'
+                f"{caption_html}"
+                "</span>"
+            )
+        if suffix in AUDIO_EXTENSIONS:
+            return (
+                '<span class="asset-embed asset-embed-audio">'
+                f'<audio controls preload="metadata" src="{escaped_src}"></audio>'
+                f"{caption_html}"
+                "</span>"
+            )
+        return f'<a class="asset-link" href="{escaped_src}">{html.escape(trimmed_caption or alt_text or "查看附件")}</a>'
 
     def render_blocks(
         self,
@@ -1749,6 +2095,13 @@ class MarkdownRenderer:
             target = html.unescape(match.group(2))
             anchor = html.unescape(match.group(3) or "")
             label = html.unescape(match.group(4) or target)
+            asset_rel = resolve_local_asset(target, note, self.asset_lookup)
+            if asset_rel is not None:
+                href = relative_href(note.output_path, DIST_ROOT / asset_rel)
+                if is_embed:
+                    caption = label if label != target else ""
+                    return take_placeholder(self.render_media_embed(href, label or asset_rel.stem, asset_rel.suffix.lower(), caption=caption))
+                return take_placeholder(f'<a class="asset-link" href="{href}">{html.escape(label)}</a>')
             target_note = resolve_note_reference(target, note, self.note_lookup, self.alias_lookup)
             if target_note:
                 links_to.add(target_note.note_key)
@@ -1769,15 +2122,16 @@ class MarkdownRenderer:
             parsed = urlparse(target)
             if parsed.scheme in {"http", "https", "mailto"}:
                 if is_image:
-                    return take_placeholder(f'<img src="{html.escape(target, quote=True)}" alt="{html.escape(label)}">')
+                    suffix = Path(parsed.path).suffix.lower()
+                    return take_placeholder(self.render_media_embed(target, label or "image", suffix))
                 attrs = ' target="_blank" rel="noreferrer"' if parsed.scheme in {"http", "https"} else ""
                 return take_placeholder(f'<a href="{html.escape(target, quote=True)}"{attrs}>{html.escape(label)}</a>')
 
-            asset_rel = resolve_local_asset(target, note)
+            asset_rel = resolve_local_asset(target, note, self.asset_lookup)
             if asset_rel is not None:
                 href = relative_href(note.output_path, DIST_ROOT / asset_rel)
                 if is_image:
-                    return take_placeholder(f'<img src="{href}" alt="{html.escape(label)}">')
+                    return take_placeholder(self.render_media_embed(href, label or asset_rel.stem, asset_rel.suffix.lower()))
                 return take_placeholder(f'<a class="asset-link" href="{href}">{html.escape(label)}</a>')
 
             target_note = resolve_note_reference(target, note, self.note_lookup, self.alias_lookup)
@@ -1863,8 +2217,8 @@ def write_assets(search_index: list[dict[str, str]]) -> None:
     (DIST_ROOT / ".nojekyll").write_text("", encoding="utf-8")
 
 
-def copy_assets() -> None:
-    for asset in iter_assets():
+def copy_assets(assets: list[Path]) -> None:
+    for asset in assets:
         rel = asset.relative_to(VAULT_ROOT)
         target = DIST_ROOT / rel
         target.parent.mkdir(parents=True, exist_ok=True)
@@ -2072,10 +2426,51 @@ def shorten_label(text: str, limit: int = 24) -> str:
     return text[: limit - 1] + "…"
 
 
+def plain_meta_text(value: str) -> str:
+    stripped = value.strip()
+    if not stripped:
+        return ""
+    wiki_match = WIKI_LINK_RE.fullmatch(stripped)
+    if wiki_match:
+        return (wiki_match.group(4) or wiki_match.group(2) or "").strip()
+    md_match = MD_LINK_RE.fullmatch(stripped)
+    if md_match:
+        return (md_match.group(2) or md_match.group(3) or "").strip()
+    return stripped
+
+
+def note_meta_html(note: Note) -> str:
+    parts: list[str] = []
+
+    author_value = note.frontmatter.get("author")
+    author_items = author_value if isinstance(author_value, list) else ([author_value] if author_value else [])
+    author_items = [plain_meta_text(str(item)) for item in author_items if str(item).strip()]
+    if author_items:
+        parts.append("Author: " + html.escape(" · ".join(author_items)))
+
+    source_value = note.frontmatter.get("source")
+    if isinstance(source_value, str) and source_value.strip():
+        source_text = source_value.strip()
+        parsed = urlparse(source_text)
+        if parsed.scheme in {"http", "https", "mailto"}:
+            attrs = ' target="_blank" rel="noreferrer"' if parsed.scheme in {"http", "https"} else ""
+            parts.append(
+                "Source: "
+                + f'<a href="{html.escape(source_text, quote=True)}"{attrs}>{html.escape(source_text)}</a>'
+            )
+        else:
+            parts.append("Source: " + html.escape(plain_meta_text(source_text)))
+
+    if not parts:
+        folder_path = note.rel_path.parent.as_posix() if note.rel_path.parent != Path(".") else "Vault Root"
+        parts.append(f"Path: {html.escape(folder_path)}")
+        parts.append(f"Updated: {html.escape(note.date_label)}")
+
+    return "".join(f'<span class="article-meta-line">{part}</span>' for part in parts)
+
+
 def build_note_page(note: Note, tree: FolderNode) -> str:
     breadcrumbs = breadcrumb_html(note.output_path, note.rel_path.parent)
-    folder_path = note.rel_path.parent.as_posix() if note.rel_path.parent != Path(".") else "Vault Root"
-    summary = build_summary(note.plain_text, title=note.title)
     body_html = note.html_body
     if note.headings and note.headings[0].level == 1 and note.headings[0].text == note.title:
         body_html = re.sub(r"^\s*<h1 id=\"[^\"]+\">.*?</h1>\s*", "", body_html, count=1, flags=re.S)
@@ -2083,8 +2478,7 @@ def build_note_page(note: Note, tree: FolderNode) -> str:
     content = f"""
     <div class="breadcrumbs">{breadcrumbs}</div>
     <h1 class="page-header">{html.escape(note.title)}</h1>
-    <p class="article-summary">{html.escape(summary)}</p>
-    <div class="article-meta">Path: {html.escape(folder_path)} &nbsp;·&nbsp; Updated: {html.escape(note.date_label)}</div>
+    <div class="article-meta">{note_meta_html(note)}</div>
     <div class="doc-body">
       {body_html}
     </div>
@@ -2234,14 +2628,17 @@ def main() -> None:
             )
         )
 
+    assets = iter_assets()
+    asset_lookup = build_asset_lookup(assets)
     note_lookup, alias_lookup = build_alias_lookup(notes)
-    renderer = MarkdownRenderer(note_lookup, alias_lookup)
+    renderer = MarkdownRenderer(note_lookup, alias_lookup, asset_lookup)
 
     for note in notes:
-        html_body, headings, links_to = renderer.render(note)
+        html_body, headings, links_to, properties_html = renderer.render(note)
         note.html_body = html_body
         note.headings = headings
         note.links_to = links_to
+        note.properties_html = properties_html
 
     for note in notes:
         for target_key in note.links_to:
@@ -2250,7 +2647,7 @@ def main() -> None:
                 target_note.backlinks.append(note)
 
     tree = build_tree(notes)
-    copy_assets()
+    copy_assets(assets)
 
     search_index = [
         {
