@@ -1,0 +1,10 @@
+.DS_Store
+__pycache__/
+test-results/
+*.pyc
+
+# Local preview/debug screenshots
+/*.png
+
+# Local logs and temp files
+*.log

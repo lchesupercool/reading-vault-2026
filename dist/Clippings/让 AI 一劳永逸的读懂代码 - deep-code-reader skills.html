@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>让 AI 一劳永逸的读懂代码 - deep-code-reader skills · Reading Vault 2026</title>
+  <link rel="stylesheet" href="../assets/site.css?v=1773978725932326133">
+</head>
+<body class="theme-light page-doc" data-root-prefix="../">
+  <div class="mobile-bar">
+    <button class="mobile-menu" type="button" aria-label="打开导航">☰</button>
+    <div class="mobile-title">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</div>
+  </div>
+  <div class="published-container has-navigation is-readable-line-width">
+    <div class="site-body">
+      <aside class="site-nav site-body-left-column">
+        
+    <div class="site-body-left-column-inner">
+      <a class="nav-site-title site-body-left-column-site-name" href="../index.html">Reading Vault 2026</a>
+      <div class="site-body-left-column-site-theme-toggle">
+        <button class="theme-toggle checkbox-container" type="button" aria-label="切换明暗模式">
+          <span class="option mod-dark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2.4M12 19.6V22M4.93 4.93l1.7 1.7M17.37 17.37l1.7 1.7M2 12h2.4M19.6 12H22M4.93 19.07l1.7-1.7M17.37 6.63l1.7-1.7"></path>
+            </svg>
+          </span>
+          <span class="option mod-light" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 15.2A7.9 7.9 0 0 1 8.8 4 8.9 8.9 0 1 0 20 15.2Z"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <div class="nav-search-wrap">
+        <input class="nav-search" type="search" placeholder="Search page or heading...">
+        <div class="search-results"></div>
+      </div>
+    <div class="nav-tree nav-view-outer"><div class="nav-view"><div class="tree-section"><a class="tree-home-link" href="../index.html">START HERE</a></div><div class="tree-folder"><div class="tree-folder-header"><button class="tree-toggle" type="button" aria-expanded="true" aria-label="展开或收起文件夹">▾</button><a class="tree-folder-link" href="index.html">Clippings</a></div><div class="tree-children"><a class="tree-note-link" href="Ghostty 终端入门指南：安装、配置、用起来.html">Ghostty 终端入门指南：安装、配置、用起来</a><a class="tree-note-link is-active" href="让 AI 一劳永逸的读懂代码 - deep-code-reader skills.html">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</a></div></div></div></div></div>
+      </aside>
+      <div class="site-body-center-column">
+        <main class="site-main publish-renderer">
+          <div class="site-content markdown-preview-view markdown-rendered">
+            <div class="markdown-preview-sizer">
+              
+    <div class="breadcrumbs"><a href="../index.html">START HERE</a><span>/</span><a href="index.html">Clippings</a></div>
+    <h1 class="page-header">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</h1>
+    <p class="article-summary">这两天养虾的时候针对很多架构级的痛点会通过给 OpenClaw 写扩展组件的方式解决，就需要深入研究它的源码和配置项。一开始我的做法也很普通，clone 一个 openclaw repo 后在里面打开一个 claude terminal，不...</p>
+    <div class="article-meta">Path: Clippings &nbsp;·&nbsp; Updated: 2026-03-20</div>
+    <div class="doc-body">
+      <p>这两天养虾的时候针对很多架构级的痛点会通过给 OpenClaw 写扩展组件的方式解决，就需要深入研究它的源码和配置项。一开始我的做法也很普通，clone 一个 openclaw repo 后在里面打开一个 claude terminal，不断问他问题，让他帮忙一起扫读和精读代码，画架构图流程图，然后 /clear。</p>
+<p>这很容易让我发现： <strong>很多问题我是在反复问的，很多流程也是 openclaw 反复读的。</strong></p>
+<p>不同对话里问过类似的东西，有些问题之间有交叉但散落在不同的上下文里，每次开新对话又得从头来。AI 并没有&quot;记住&quot;上次的结论，之前花的 token 等于白费了。更麻烦的是，这些零散的问答没有沉淀在任何地方——我对这个代码库的理解，分散在十几个对话记录里，很容易无法复用。</p>
+<p>这其实是个挺普遍的痛点，如果你经常需要读不熟悉的代码库——接手新项目、给开源项目贡献代码、做技术调研——大概都遇到过类似的情况。所以我花了一天时间做了个小工具，想解决的就是这一件事： <strong>怎么把 AI 对一个代码库的理解，系统性地沉淀下来，变成可以反复加载使用的知识。</strong></p>
+<h2 id="做了什么">做了什么</h2>
+<p>工具叫 <a href="https://link.zhihu.com/?target=https%3A//github.com/CiferaTeam/deep-code-reader" target="_blank" rel="noreferrer">deep-code-reader</a> ，是一个 <a href="https://zhida.zhihu.com/search?content_id=271703469&amp;content_type=Article&amp;match_order=1&amp;q=Claude+Code&amp;zhida_source=entity" target="_blank" rel="noreferrer">Claude Code</a> 的 skill。它做的事情很简单：自动深读一个代码库的每个模块，然后把理解的内容输出成结构化的知识文件（ <a href="https://zhida.zhihu.com/search?content_id=271703469&amp;content_type=Article&amp;match_order=1&amp;q=SKILL.md&amp;zhida_source=entity" target="_blank" rel="noreferrer">SKILL.md</a> ）。</p>
+<p>但光让 AI &quot;读完然后写个总结&quot;是不够的：模型总是倾向于快速探索和提前停止，如果是个人的问题驱动，很可能探索度是不够的，视野也不够全局，给出的答案也不够全面和深入。所以我需要一种固定模式，让 AI 真正读透代码，并能沉淀全局的知识。</p>
+<p>思路是很经典的分治结构，加对 skills 的一点新感悟：skills 不止可以保存固有的工作流，也可以用于沉淀知识和经验，甚至它也是长期记忆的一种潜在雏形模式。</p>
+<p>首先让模型探索并按功能模块做切分，然后针对每个模块做 ABC 精读流程:</p>
+<ul><li><strong>Agent A</strong> 负责读源码、写知识文档</li><li><strong>Agent B</strong> 也读源码，但看不到 A 写的文档——它的任务是根据代码出考题，附上标准答案</li><li><strong>Agent C</strong> 只看 A 写的文档，完全不碰源码——它来闭卷答题</li></ul>
+<p>然后对答案。C 答不上来的，说明 A 的文档有遗漏，打回去补充，B 再出新题，C 再考一次。最多三轮。</p>
+<p>其中&quot;对答案&quot;的正确性本身通过划定一些固定的答题事实点，让模型来进行判断是否合格。</p>
+<p>![](https://pica.zhimg.com/v2-ba9b2ce4325b57a3cb11c8e0113f3ca0_1440w.jpg)</p>
+<p>ABC Loop</p>
+<p>有几个设计上的考虑值得提一下：</p>
+<p><strong>B 故意用弱模型（比如 Haiku）。</strong> 逻辑是：便宜的模型读代码会比较粗糙，测试下来更容易问出比较 general 一点的问题，不会陷入特别细的细节和特别深度的问题 -- 这也大致符合我们读陌生代码的需要，这样也比较省成本。</p>
+<p><strong>B 每轮会出新题。</strong> 它能看到之前所有轮次的旧题，要求覆盖还没测过的领域。这样 A 没法只针对已知考题去&quot;应试&quot;。</p>
+<p><strong>A 和 C 之间是完全隔离的。</strong> C 只能看 SKILL.md，看不到一行源码。如果 C 仅凭文档就能答对所有问题，那这份文档就是自足的——以后任何时候加载它，都不需要再翻源码。</p>
+<h2 id="产出物长什么样">产出物长什么样</h2>
+<p>每个模块的 SKILL.md 覆盖五个维度：</p>
+<ul><li><strong>职责与能力</strong> ：这个模块做什么，公开 API，函数签名</li><li><strong>核心设计逻辑</strong> ：为什么这样设计，关键架构决策和取舍</li><li><strong>数据结构</strong> ：核心类型、接口、它们之间的关系</li><li><strong>状态流转</strong> ：数据怎么流动，入口在哪，错误怎么处理</li><li><strong>修改指南</strong> ：&quot;如果你想加一种新的 XX，需要改这几个文件&quot;</li></ul>
+<p>最后一个维度可能是最实用的。对我来说，读一个代码库的目的通常不是学习，而是&quot;我要在这上面改东西&quot;——直接告诉我该动哪些文件，比给我讲一通架构哲学有用得多。</p>
+<p>另外还会生成一个全局索引，记录所有模块的一句话描述、模块间依赖关系、跨模块的操作指南。</p>
+<h2 id="用起来怎么样">用起来怎么样</h2>
+<p>安装就两行命令：</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>git clone https://github.com/CiferaTeam/deep-code-reader.git
+cp -r deep-code-reader/deep-code-read ~/.claude/skills/</code></pre>
+<p>这里用了 <a href="https://link.zhihu.com/?target=https%3A//github.com/obra/superpowers" target="_blank" rel="noreferrer">superpowers</a> 作为格式化依赖，superpowers 本身我也强烈建议大家体验一下。</p>
+<p>然后使用下列命令开始触发读代码学习：</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>/deep-code-read https://github.com/example/project ~/.claude/skills/
+# 或者本地路径
+/deep-code-read ./path/to/project ~/.claude/skills/</code></pre>
+<h3 id="实战体验">实战体验</h3>
+<p>我拿它实际阅读 openclaw 的过程</p>
+<p>![](https://pic3.zhimg.com/v2-934ceffc647715edad29ec21e4ccc83c_1440w.jpg)</p>
+<p>发完我就睡觉去了...</p>
+<p>第二天看了一下执行日志的大致过程:</p>
+<p>![](https://pic1.zhimg.com/v2-cb814d04b775d22491a59cbf1413d21e_1440w.jpg)</p>
+<p>模型按模块切分, 启动 subagents 精读</p>
+<p>![](https://pic2.zhimg.com/v2-457e329f81d2b05676697ed1b6030f67_1440w.jpg)</p>
+<p>一轮 ABC 后全员不合格, 继续精读</p>
+<p>![](https://pic1.zhimg.com/v2-bd70761321dc6808e0c015175c96f732_1440w.jpg)</p>
+<p>第二轮修正</p>
+<p>![](https://picx.zhimg.com/v2-02098c89fdf01928630ebdafb367440b_1440w.jpg)</p>
+<p>第三轮后全部通过</p>
+<p>![](https://pic3.zhimg.com/v2-376c950af915d5cd90c1498b57ecc4ac_1440w.jpg)</p>
+<p>最后总结的大致问题</p>
+<p>最后我试着问了他几个问题，篇幅原因打印了很多日志，就不贴截图了，直接把文字贴在下面，感受一下它的回答深度。我感觉还是不错的，基本回答了我想要的内容，或给我指出了精确的代码点位。</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>问：目前 openclaw 似乎在 channel 里有最大对话轮数显示, 是不是意味着当对话历史超过一定长度后,
+会不断淘汰前面的对话内容, 然后对话部分的窗口就会变调, 从而导致疯狂的 llm cache miss?
+
+答：两个不同的&quot;轮数限制&quot;概念
+
+  1. UI 显示层的限制（不影响 LLM）
+
+  来自 openclaw-dr-ui-cli/ — ChatLog 组件有 maxComponents（默认 180，最小 20），超过后 pruneOverflow() 移除最老的
+  UI 组件。这纯粹是 前端渲染优化，只影响显示，不影响发送给 LLM 的内容。
+
+  2. 真正影响 LLM 的：Compaction 机制
+
+  来自 openclaw-dr-agent-ai/，核心逻辑在 src/agents/compaction.ts：
+
+  每轮对话后 -&gt; afterTurn() -&gt; 检查 token 预算 -&gt; 超预算触发 Auto-compaction
+    -&gt; summarizeInStages()
+      -&gt; chunkMessagesByMaxTokens() (安全系数 1.2x)
+      -&gt; 对每个 chunk: summarizeWithFallback()
+      -&gt; 合并部分摘要
+    -&gt; pruneHistoryForContextShare() 裁剪最老的 chunk
+
+  关键常量：BASE_CHUNK_RATIO=0.4, MIN_CHUNK_RATIO=0.15, SAFETY_MARGIN=1.2, SUMMARIZATION_OVERHEAD_TOKENS=4096
+
+  Context window guard：硬下限 16,000 tokens，32,000 以下警告。
+
+  你的直觉是对的 — 但问题比你想的稍微复杂
+
+  Compaction 确实会导致 LLM prompt prefix 大幅变化。 当对话超过 context window 预算时：
+
+  1. 旧消息被 summarizeInStages() 压缩成摘要
+  2. 压缩后的 prompt 前缀完全改变（原始消息 → 摘要文本）
+  3. 对于依赖 KV cache prefix matching 的 LLM 提供商（如 Anthropic prompt caching、OpenAI），每次 compaction
+  后确实会导致 cache 全部失效
+
+  但这不是&quot;不断淘汰&quot;式的滑动窗口——它是阶段性的：
+
+  - 对话积累到接近 context window 上限 → 触发一次 compaction
+  - Compaction 后 token 使用大幅下降 → 后续若干轮不需要再 compact
+  - 再次接近上限 → 再次触发
+
+  所以 cache miss 模式是 周期性的尖峰，不是每轮都 miss。
+
+问：slack 这种有二级 thread 概念的聊天内容, 串联聊天内容的时候和 feishu 这种信息都放在一个窗口里的, 格式是一样的吗?
+
+答：根据 skill 文件，答案是：格式不一样，但差异不在你想的地方。
+
+  统一的 MsgContext — 所有渠道的消息被&quot;拍平&quot;
+
+  不管是 Slack thread 还是 Feishu 单窗口，所有渠道的消息最终都被各自的 monitor 翻译成同一个 MsgContext
+  结构。其中线程相关的字段是：
+
+  MsgContext {
+    Channel: &quot;slack&quot; | &quot;feishu&quot; | ...
+    ChatType: &quot;direct&quot; | &quot;group&quot; | &quot;channel&quot;
+    Body: string              // 消息文本
+    ReplyToId: string         // 回复的目标消息 ID
+    MessageThreadId: string   // 所在 thread 的 ID
+    ThreadLabel: string       // thread 标题/描述
+    GroupId, GroupChannel...   // 群组上下文
+  }
+
+  到了 LLM 看到的上下文层面，所有渠道的对话内容格式是统一的 — 都是扁平的消息序列。
+
+  真正的差异在两个地方
+
+  1. Session Key 的构造不同
+
+  Gateway 的 session key 格式是 agent:&lt;agentId&gt;:&lt;channel&gt;:&lt;accountId&gt;:&lt;peerKind&gt;:&lt;peerId&gt;，对于有 thread
+  的渠道会追加 :thread:&lt;threadId&gt; 后缀。
+
+  - Slack: 主频道消息和 thread 回复是不同的 session key → 各自独立的 transcript 文件 → LLM 看到的是只有该 thread
+  内的对话
+  - Feishu: 没有原生 thread 概念（通过 extensions/feishu 实现），所有消息共享同一个 session key → LLM
+  看到的是整个窗口的全部对话
+
+  2. Threading 适配器的行为不同
+
+  ChannelPlugin 有一个可选的 .threading?: ChannelThreadingAdapter，提供：
+  - replyToMode — 控制回复是发到 thread 还是主频道
+  - buildToolContext — 提取 MessageThreadId 和 CurrentMessageId
+
+  有 thread 能力的渠道（Discord, Slack, Google Chat — capabilities.threads = true）：
+  - Slack 有专门的 prepare-thread-context.ts 提取 thread 上下文
+  - Discord 有 threading.ts 做 resolveDiscordReplyTarget()
+  - Thread binding 策略通过 resolveThreadBindingSpawnPolicy() 控制是否为 thread 创建独立 session
+
+  没有原生 thread 的渠道（Feishu, Telegram, iMessage 等）：
+  - 没有 thread binding
+  - 所有消息进同一个 session
+  - 对话历史就是窗口里的全部内容
+
+  所以回到你的问题
+
+  ┌─────────────────────┬──────────────────────────────────┬────────────────────────────────────────┐
+  │                     │        Slack (有 thread)         │           Feishu (无 thread)           │
+  ├─────────────────────┼──────────────────────────────────┼────────────────────────────────────────┤
+  │ LLM 看到的消息格式  │ 相同（MsgContext 统一）          │ 相同                                   │
+  ├─────────────────────┼──────────────────────────────────┼────────────────────────────────────────┤
+  │ Session 粒度        │ 每个 thread 独立 session         │ 整个窗口一个 session                   │
+  ├─────────────────────┼──────────────────────────────────┼────────────────────────────────────────┤
+  │ 对话历史范围        │ 只有 thread 内的消息             │ 窗口内全部消息                         │
+  ├─────────────────────┼──────────────────────────────────┼────────────────────────────────────────┤
+  │ Compaction 触发频率 │ 低（thread 内消息量少）          │ 高（所有消息堆积在一起）               │
+  ├─────────────────────┼──────────────────────────────────┼────────────────────────────────────────┤
+  │ LLM cache 效率      │ 好（每个 thread 上下文小且稳定） │ 差（容易触发 compaction → cache miss） │
+  └─────────────────────┴──────────────────────────────────┴────────────────────────────────────────┘
+
+  结论：消息格式本身是统一的，但 Slack thread 模式天然更 cache-friendly，因为每个 thread 是独立的小 session；而
+  Feishu 这种单窗口模式更容易积累到 compaction 阈值，导致你说的 cache miss 问题。
+
+问: 每轮调用工具之前的 context 串联流程，有哪些插件和 hook 点可控替换? 都能提供什么级别的模块切换能力?
+
+答:   每轮 LLM 调用前的 Context 串联流程 &amp; 可控 Hook 点
+
+  完整流程图（从消息进入到 LLM 看到 prompt）
+
+  ① message_received (void hook, 观察)
+     ↓
+  ② Inbound Message → dispatchInboundMessage()
+     ↓
+  ③ finalizeInboundContext() → 构建 MsgContext
+     ↓
+  ④ before_model_resolve (modifying hook, first-wins)
+     ↓
+  ⑤ resolveBootstrapContextForRun() → 加载 workspace 文件
+     ↓
+  ⑥ before_prompt_build (modifying hook, 拼接)
+     ↓
+  ⑦ before_agent_start (legacy modifying hook)
+     ↓
+  ⑧ Context Engine: assemble({ messages, tokenBudget })
+     ↓
+  ⑨ Memory Search: search(query) → 注入检索结果
+     ↓
+  ⑩ llm_input (void hook, 观察)
+     ↓
+     ══════ LLM API Call ══════
+     ↓
+  ⑪ llm_output (void hook, 观察)
+     ↓
+  ⑫ before_tool_call (modifying hook) ←─── 每轮工具调用前
+     ↓
+     ══════ Tool Execution ══════
+     ↓
+  ⑬ after_tool_call (void hook)
+     ↓
+  ⑭ tool_result_persist (SYNC modifying hook)
+     ↓
+  ⑮ before_message_write (SYNC modifying hook)
+     ↓
+     [回到 ⑧ 进入下一轮 tool-use loop]
+     ↓
+  ⑯ afterTurn() → Context Engine 决定是否 compact
+     ↓
+  ⑰ before_compaction / after_compaction (void hooks)
+     ↓
+  ⑱ message_sending (modifying hook, 可 cancel)
+     ↓
+  ⑲ message_sent (void hook)
+
+  各 Hook 点的模块切换能力
+
+  ┌─────┬─────────────────┬────────┬─────────┬───────────────────────────────────────────────┬───────────────┐
+  │  #  │     Hook 点     │  类型  │ 合并语  │                   能做什么                    │  不能做什么   │
+  │     │                 │        │   义    │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │  ①  │ message_receive │ void   │ —       │ 观察消息、记录日志、claim thread ownership    │ 不能修改消息  │
+  │     │ d               │ (并行) │         │                                               │ 内容          │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ before_model_re │ modify │ first-w │                                               │ 不能改        │
+  │  ④  │ solve           │ ing    │ ins     │ 替换 provider/model（如动态路由到不同 LLM）   │ context 内容  │
+  │     │                 │ (串行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ before_prompt_b │ modify │         │ 注入 system context（prependSystemContext/app │ 不能删除已有  │
+  │  ⑥  │ uild            │ ing    │ 拼接    │ endSystemContext），等于在 system prompt      │ context       │
+  │     │                 │ (串行) │         │ 前后插入任意内容                              │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ before_agent_st │ modify │ legacy  │                                               │ 已废弃，新插  │
+  │  ⑦  │ art             │ ing    │ 合并    │ 同时改 model + prompt（④⑥ 的合体）            │ 件应用 ④⑥     │
+  │     │                 │ (串行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │  ⑩  │ llm_input       │ void   │ —       │ 观察最终发送给 LLM 的完整 payload             │ 不能修改      │
+  │     │                 │ (并行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │  ⑪  │ llm_output      │ void   │ —       │ 观察 LLM 返回的完整响应                       │ 不能修改      │
+  │     │                 │ (并行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ before_tool_cal │ modify │         │ 修改/阻止工具调用（改参数、返回 mock          │               │
+  │  ⑫  │ l               │ ing    │ —       │ 结果、cancel）                                │ —             │
+  │     │                 │ (串行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │  ⑬  │ after_tool_call │ void   │ —       │ 观察工具执行结果                              │ 不能修改      │
+  │     │                 │ (并行) │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ tool_result_per │ SYNC   │         │ 修改工具结果写入 transcript                   │               │
+  │  ⑭  │ sist            │ modify │ —       │ 前的内容（脱敏、过滤）                        │ 不能异步操作  │
+  │     │                 │ ing    │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │ before_message_ │ SYNC   │         │                                               │               │
+  │  ⑮  │ write           │ modify │ —       │ 修改/阻止消息写入 transcript                  │ 不能异步操作  │
+  │     │                 │ ing    │         │                                               │               │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │  ⑯  │ before_compacti │ void   │ —       │ 观察 compaction 即将发生                      │ 不能阻止或改  │
+  │     │ on              │        │         │                                               │ 变策略        │
+  ├─────┼─────────────────┼────────┼─────────┼───────────────────────────────────────────────┼───────────────┤
+  │     │                 │ modify │         │ 修改/取消发出的消息（thread-ownership         │               │
+  │  ⑱  │ message_sending │ ing    │ —       │ 用这个）                                      │ —             │
+  │     │                 │ (串行) │         │                                               │               │
+  └─────┴─────────────────┴────────┴─────────┴───────────────────────────────────────────────┴───────────────┘
+
+  三个&quot;模块级&quot;可整体替换的切换点
+
+  除了 hook 点外，还有三个能整体替换模块实现的 slot：
+
+  Slot: Context Engine
+  配置路径: plugins.slots.contextEngine
+  默认值: &quot;legacy&quot;
+  能力: 完全替换 context 组装逻辑：包括 assemble()（怎么拼
+    messages）、compact()（怎么压缩）、ingest()（怎么吃消息）、afterTurn()（turn
+    后干什么）。这是最强的切换点，可以实现完全不同的 context 管理策略
+  ────────────────────────────────────────
+  Slot: Memory Engine
+  配置路径: plugins.slots.memory
+  默认值: &quot;memory-core&quot;
+  能力: 替换记忆检索后端：如从 sqlite-vec 换成 LanceDB（memory-lancedb 扩展）。影响⑨步的检索结果
+  ────────────────────────────────────────
+  Slot: ACP Runtime
+  配置路径: registerContextEngine() via plugin API
+  默认值: —
+  能力: 通过 acpx 扩展替换 ACP 的 session 执行后端
+
+  Prompt Injection 安全控制
+
+  before_prompt_build 和 before_agent_start 是唯二能注入 prompt 内容的 hook。系统有专门的安全机制：
+
+  plugins.allow[pluginId].hooks.allowPromptInjection = false  (默认)
+
+  当 allowPromptInjection = false 时，hook 返回结果中的 prependSystemContext / appendSystemContext
+  字段会被自动剥离。只有显式信任的插件才能注入 prompt。
+
+  常量 PROMPT_INJECTION_HOOK_NAMES = [&quot;before_prompt_build&quot;, &quot;before_agent_start&quot;] 定义了哪些 hook 受此策略约束。</code></pre>
+<h2 id="一些实际使用建议">一些实际使用建议</h2>
+<p><strong>睡前跑。</strong> 一个中等大小的项目（5-10 个模块）可能需要一两个小时。不少 coding plan 订阅套餐每天晚上的算力周期是闲置的，晚上睡觉前跑上，早上起来就有一套现成的知识技能可以用，而且每天坚持跑不同的代码库的复利效应会更加明显。</p>
+<p><strong>选择性深读。</strong> 不一定要读整个项目。如果你只关心某几个模块，在选择阶段只勾选那几个就行，省时间也省 token。</p>
+<p><strong>把产出的 skill 放在你的 skills 目录里。</strong> 之后每次开新对话，AI 都会自动加载这些知识，不用再从头问起。这就是一开始想解决的那个&quot;知识散落在各处&quot;的问题。</p>
+<h2 id="适合谁用">适合谁用</h2>
+<p>目前来说，最直接受益的还是一线开发者——特别是那种需要频繁阅读开源项目源码、基于别人的模块做定制开发的场景。你要给一个框架写插件、要理解一个库的内部机制然后扩展它、要接手一个不熟悉的项目，这些时候跑一遍 Deep Code Reader，后续的开发效率会有明显提升。</p>
+<p>至于这套&quot;让 AI 系统性地学习一个领域，然后用考试验证学习质量，最后再用 skills 沉淀为知识&quot;的思路本身，其实不局限于代码——但这个话题比较大，下次我整体聊一下我的看法。</p>
+<p>重要的不是 skills 内容，而是从今天开始沉淀你的&quot;可插拔认知库&quot;。</p>
+<hr>
+<p>工具开源在 GitHub，MIT 协议： <a href="https://link.zhihu.com/?target=https%3A//github.com/CiferaTeam/deep-code-reader" target="_blank" rel="noreferrer">github.com/CiferaTeam/d</a></p>
+<p>顺便生成的 openclaw skills 也放一个： <a href="https://link.zhihu.com/?target=https%3A//github.com/CiferaTeam/openclaw-skills" target="_blank" rel="noreferrer">github.com/CiferaTeam/o</a></p>
+<p>目前在 Claude Code 上测试通过，设计上是平台无关的，理论上支持任何能加载 skill 文件和调度子 agent 的编程工具。</p>
+<p>有问题或者建议欢迎提 issue 或私信。</p>
+<p>编辑于 2026-03-19 17:21・广东<a href="https://zhuanlan.zhihu.com/p/357175586" target="_blank" rel="noreferrer">自学5个月Java找到了9K的工作，我的方式值得大家借鉴</a></p>
+<p>[</p>
+<p>我是去年9月22日才正式学习Java的，因为在国营单位工作了4年，在天津一个月工资只有5000块，而且看不到任何晋升的希望...</p>
+<p>](https://zhuanlan.zhihu.com/p/357175586)</p>
+    </div>
+    
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <a href="https://obsidian.md/publish" target="_blank" rel="noreferrer">Powered by Obsidian Publish</a>
+    </footer>
+  </div>
+  <div class="scrim"></div>
+  <script src="../assets/search-index.js?v=1773978725932651843"></script>
+  <script src="../assets/app.js?v=1773978725932533925"></script>
+</body>
+</html>

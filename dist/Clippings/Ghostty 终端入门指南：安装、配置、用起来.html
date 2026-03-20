@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ghostty 终端入门指南：安装、配置、用起来 · Reading Vault 2026</title>
+  <link rel="stylesheet" href="../assets/site.css?v=1773978725932326133">
+</head>
+<body class="theme-light page-doc" data-root-prefix="../">
+  <div class="mobile-bar">
+    <button class="mobile-menu" type="button" aria-label="打开导航">☰</button>
+    <div class="mobile-title">Ghostty 终端入门指南：安装、配置、用起来</div>
+  </div>
+  <div class="published-container has-navigation is-readable-line-width">
+    <div class="site-body">
+      <aside class="site-nav site-body-left-column">
+        
+    <div class="site-body-left-column-inner">
+      <a class="nav-site-title site-body-left-column-site-name" href="../index.html">Reading Vault 2026</a>
+      <div class="site-body-left-column-site-theme-toggle">
+        <button class="theme-toggle checkbox-container" type="button" aria-label="切换明暗模式">
+          <span class="option mod-dark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2.4M12 19.6V22M4.93 4.93l1.7 1.7M17.37 17.37l1.7 1.7M2 12h2.4M19.6 12H22M4.93 19.07l1.7-1.7M17.37 6.63l1.7-1.7"></path>
+            </svg>
+          </span>
+          <span class="option mod-light" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 15.2A7.9 7.9 0 0 1 8.8 4 8.9 8.9 0 1 0 20 15.2Z"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <div class="nav-search-wrap">
+        <input class="nav-search" type="search" placeholder="Search page or heading...">
+        <div class="search-results"></div>
+      </div>
+    <div class="nav-tree nav-view-outer"><div class="nav-view"><div class="tree-section"><a class="tree-home-link" href="../index.html">START HERE</a></div><div class="tree-folder"><div class="tree-folder-header"><button class="tree-toggle" type="button" aria-expanded="true" aria-label="展开或收起文件夹">▾</button><a class="tree-folder-link" href="index.html">Clippings</a></div><div class="tree-children"><a class="tree-note-link is-active" href="Ghostty 终端入门指南：安装、配置、用起来.html">Ghostty 终端入门指南：安装、配置、用起来</a><a class="tree-note-link" href="让 AI 一劳永逸的读懂代码 - deep-code-reader skills.html">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</a></div></div></div></div></div>
+      </aside>
+      <div class="site-body-center-column">
+        <main class="site-main publish-renderer">
+          <div class="site-content markdown-preview-view markdown-rendered">
+            <div class="markdown-preview-sizer">
+              
+    <div class="breadcrumbs"><a href="../index.html">START HERE</a><span>/</span><a href="index.html">Clippings</a></div>
+    <h1 class="page-header">Ghostty 终端入门指南：安装、配置、用起来</h1>
+    <p class="article-summary">Ghostty 是什么 Ghostty 是一个开源终端，用 GPU 加速渲染，速度快、内存省。配置文件是纯文本 key = value，没有 JSON 嵌套地狱。内置分屏、下拉终端、窗口状态恢复，不装插件就能多任务。作者是 HashiCor...</p>
+    <div class="article-meta">Path: Clippings &nbsp;·&nbsp; Updated: 2026-03-19</div>
+    <div class="doc-body">
+      <h2 id="ghostty-是什么">Ghostty 是什么</h2>
+<p>Ghostty 是一个开源终端，用 GPU 加速渲染，速度快、内存省。配置文件是纯文本 key = value，没有 JSON 嵌套地狱。内置分屏、下拉终端、窗口状态恢复，不装插件就能多任务。作者是 HashiCorp 创始人 Mitchell Hashimoto，开源免费。</p>
+<p>⚠️ Ghostty 目前只支持 macOS 和 Linux，暂不支持 Windows。</p>
+<p>这篇文章只教一件事：<strong>装好 Ghostty，配到舒服能用。</strong></p>
+<blockquote><p><strong>⚡</strong> <strong>两种读法： 急着用？</strong> 直接跳到文末「完整配置参考」，复制粘贴就行。 <strong>想搞懂每条配置？</strong> 往下看，每个配置项都有讲解。建议先收藏，用到的时候翻回来查</p></blockquote>
+<h2 id="安装与第一次启动">安装与第一次启动</h2>
+<p><strong>安装</strong></p>
+<pre data-language="bash"><span class="code-block-toolbar"><span class="code-block-language">bash</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-bash">brew <span class="tok-accent">install</span> --cask ghostty</code></pre>
+<p>或者去 <a href="https://ghostty.org/" target="_blank" rel="noreferrer">ghostty.org</a> 下载</p>
+<p><strong>第一次启动你会看到什么</strong></p>
+<p>打开 Ghostty 后，你会看到两个东西：</p>
+<ol><li><strong>一个普通的终端窗口</strong>——这就是主窗口</li><li><strong>一个从屏幕顶部滑下来的终端</strong>——这是 Quick Terminal（下拉终端），按 Esc 或点别处可以收起来</li></ol>
+<p>别慌，这是正常行为。Quick Terminal 是 Ghostty 的特色功能，后面会详细讲。</p>
+<p><strong>配置文件在哪</strong></p>
+<p>在 Ghostty 里按 <strong>Cmd + ,</strong> 就能直接打开配置文件，不用记路径。如果你好奇，文件位置是：</p>
+<pre data-language="bash"><span class="code-block-toolbar"><span class="code-block-language">bash</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-bash">~/.config/ghostty/config</code></pre>
+<p>配置格式极其简单——每行一个 <strong>key = value</strong>，没有 JSON、没有 YAML、没有大括号。注释用 #。</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 这是注释</span>
+<span class="tok-key">theme</span> = Catppuccin Mocha
+<span class="tok-key">font-size</span> = 14</code></pre>
+<p><strong>三条必知命令</strong></p>
+<p>开始配之前，先记三个内置命令：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 列出所有内置主题（200+ 个）</span>
+ghostty +list-themes
+
+<span class="tok-comment"># 列出系统可用字体</span>
+ghostty +list-fonts
+
+<span class="tok-comment"># 查看所有配置项的默认值和文档</span>
+ghostty +show-config --default --docs</code></pre>
+<p>最后一条特别有用——这就是 Ghostty 的完整配置手册，比翻网页快得多。</p>
+<p><strong>重载配置</strong></p>
+<p>改完配置文件后，不需要重启 Ghostty：</p>
+<pre data-language="bash"><span class="code-block-toolbar"><span class="code-block-language">bash</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-bash">Cmd <span class="tok-flag">+</span> Shift <span class="tok-flag">+</span> ,</code></pre>
+<p>按一下，配置立即生效。这是你接下来会反复用到的快捷键。</p>
+<h2 id="核心配置">核心配置</h2>
+<p><strong>外观：主题 + 透明度 + 标题栏</strong></p>
+<p>装完打开，默认主题有点素。而且白天晚上得手动切主题，我们本次直接设置好自动切换。</p>
+<p>加三行配置，让它跟着系统自动切：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 亮色用 Catppuccin Latte，暗色用 Catppuccin Mocha</span>
+<span class="tok-key">theme</span> = light:Catppuccin Latte,dark:Catppuccin Mocha
+
+<span class="tok-comment"># 背景透明度（1.0 = 完全不透明，0.85 = 微透明）</span>
+<span class="tok-key">background-opacity</span> = 0.85
+
+<span class="tok-comment"># 隐藏原生标题栏，获得更多屏幕空间</span>
+<span class="tok-key">macos-titlebar-style</span> = hidden</code></pre>
+<p>几个细节：</p>
+<ul><li>theme 支持 light:xxx,dark:yyy 语法，跟着 macOS 深色模式走，不用手动改。</li><li>background-opacity 设在 0.85-0.95 之间比较合适。想对照文档写代码可以再降到 0.8，但太低了背景会干扰阅读。</li><li>background-blur 配合透明度用，加上毛玻璃效果。</li><li>macos-titlebar-style = hidden 藏掉标题栏但保留红绿灯。不过要注意：<strong>hidden 模式下 Cmd+T 会开新窗口而不是新 Tab</strong>——因为 macOS 原生 Tab 需要标题栏。如果你常用 Tab，建议改成 tabs，标题栏会变窄并集成 Tab 栏，视觉上也很干净。</li></ul>
+<p><strong>字体</strong></p>
+<p>想要编程连字（!= 显示成 ≠），还要支持中文，又想要终端图标。以前这意味着装三个字体然后祈祷它们不打架。</p>
+<p>现在一个就够了。Maple Mono 的 NF CN 版本把等宽、连字、中文、图标全打包在一起。而且 Ghostty 自带 Nerd Font 图标渲染，就算你用别的字体（比如 JetBrains Mono），终端图标也能正常显示，不用专门找 NF 补丁版。</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 推荐方案 A：Maple Mono NF CN（连字 + 图标 + 中文 全包）</span>
+<span class="tok-key">font-family</span> = <span class="tok-string">&quot;Maple Mono NF CN&quot;</span>
+<span class="tok-key">font-size</span> = 14
+
+<span class="tok-comment"># 推荐方案 B：JetBrains Mono（Ghostty 内置 Nerd Font 图标，不需要 NF 版本）</span>
+<span class="tok-comment"># font-family = &quot;JetBrains Mono&quot;</span>
+<span class="tok-comment"># font-size = 14</span>
+
+<span class="tok-comment"># macOS 专属：字体加粗渲染，让细字体在 Retina 屏上更清晰</span>
+<span class="tok-key">font-thicken</span> = true</code></pre>
+<p>装字体：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># Maple Mono（推荐）</span>
+brew install --cask font-maple-mono-nf-cn
+
+<span class="tok-comment"># 或 JetBrains Mono</span>
+brew install --cask font-jetbrains-mono</code></pre>
+<p>连字可以微调——比如你不喜欢 != 变成 ≠，用 font-feature 精确控制：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 启用常用连字</span>
+<span class="tok-key">font-feature</span> = calt
+<span class="tok-key">font-feature</span> = liga</code></pre>
+<p><strong>快捷键与分屏</strong></p>
+<p>一个窗口经常不够用——你想一边跑命令一边看输出结果。Ghostty 内置分屏，不需要装插件。</p>
+<p>常用快捷键：</p>
+<p><strong>分屏</strong></p>
+<ul><li>左右分屏：Cmd + D</li><li>上下分屏：Cmd + Shift + D</li><li>下一个分屏：Cmd + Shift + \]</li><li>上一个分屏：Cmd + Shift + \[</li><li>放大/还原当前分屏：Cmd + Shift + Enter</li><li>缩放分屏（增大/减小）：Cmd + Ctrl + = / -</li><li>关闭当前分屏：Cmd + W</li></ul>
+<p><strong>Tab 与窗口</strong></p>
+<ul><li>新建 Tab：Cmd + T</li><li>切换 Tab：Cmd + 数字键</li><li>全屏切换：Cmd + Enter</li></ul>
+<p><strong>搜索与工具</strong></p>
+<ul><li>搜索终端输出：Cmd + F（1.3.0 新增）</li><li>下一个/上一个结果：Cmd + G / Cmd + Shift + G</li><li>命令面板：Cmd + Shift + P</li><li>打开配置文件：Cmd + ,</li><li>重载配置：Cmd + Shift + ,</li></ul>
+<p>默认的 Cmd+Shift+\[/\] 是循环切换分屏。想按方向跳（像 Vim 那样）可以加：</p>
+<pre data-language="text"><span class="code-block-toolbar"><span class="code-block-language">text</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-text">keybind = cmd+shift+h=goto_split:left
+keybind = cmd+shift+j=goto_split:down
+keybind = cmd+shift+k=goto_split:up
+keybind = cmd+shift+l=goto_split:right</code></pre>
+<p><strong>Quick Terminal（下拉终端）</strong></p>
+<p>正在看文档，突然想跑条命令。切到终端 → 跑完 → 切回来，心流断了。</p>
+<p>Quick Terminal 就干这事——全局热键呼出来，用完自动收回去：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 全局热键（默认就有，这里可以自定义）</span>
+<span class="tok-key">keybind</span> = global:ctrl+grave_accent=toggle_quick_terminal
+
+<span class="tok-comment"># 下拉终端的位置：top / bottom / left / right / center</span>
+<span class="tok-key">quick-terminal-position</span> = top
+
+<span class="tok-comment"># 占屏幕比例（v1.2+ 支持精确尺寸）</span>
+<span class="tok-key">quick-terminal-size</span> = 50%
+
+<span class="tok-comment"># 在哪个屏幕显示：main / mouse / macos-menu-bar</span>
+<span class="tok-key">quick-terminal-screen</span> = main
+
+<span class="tok-comment"># 自动隐藏：失去焦点时收起</span>
+<span class="tok-key">quick-terminal-autohide</span> = true
+
+<span class="tok-comment"># 动画时长（秒，0 = 无动画）</span>
+<span class="tok-key">quick-terminal-animation-duration</span> = 0.15</code></pre>
+<p>比如跑一条 git status、查个环境变量、临时算个数——按 Ctrl + \` 呼出，再按一次或切到别的窗口就自动收起。</p>
+<p><strong>窗口行为</strong></p>
+<p>每次重启 Ghostty，之前的分屏布局、Tab、工作目录全没了？加几行配置：</p>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># 永远记住窗口状态（分屏布局、Tab、目录）</span>
+<span class="tok-key">window-save-state</span> = always
+
+<span class="tok-comment"># 新分屏/Tab 继承当前目录</span>
+<span class="tok-key">window-inherit-working-directory</span> = true
+
+<span class="tok-comment"># 新窗口继承字体大小</span>
+<span class="tok-key">window-inherit-font-size</span> = true
+
+<span class="tok-comment"># 内边距（像素），让文字不贴边</span>
+<span class="tok-key">window-padding-x</span> = 4
+<span class="tok-key">window-padding-y</span> = 4
+
+<span class="tok-comment"># 缩小窗口时，内边距等比缩小</span>
+<span class="tok-key">window-padding-balance</span> = true</code></pre>
+<p>window-save-state = always 是最实用的一条——重启后分屏布局原封不动恢复，连每个分屏的工作目录都记得。window-inherit-working-directory = true 也好用：在 ~/projects/my-app 目录按 Cmd+D 分屏，新分屏自动就在这个目录，不用再 cd 一次。</p>
+<h2 id="完整配置参考">完整配置参考</h2>
+<p>不想一条一条配？下面是一份完整配置，直接复制到 ~/.config/ghostty/config 就能用。</p>
+<blockquote><p>⚠️ 配置里用了 Maple Mono 字体，复制前先装一下：brew install --cask font-maple-mono-nf-cn，否则字体会回退到系统默认。</p></blockquote>
+<pre data-language="yaml"><span class="code-block-toolbar"><span class="code-block-language">yaml</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-yaml"><span class="tok-comment"># ===========================</span>
+<span class="tok-comment"># Ghostty 完整配置</span>
+<span class="tok-comment"># ===========================</span>
+
+<span class="tok-comment"># --- 外观 ---</span>
+<span class="tok-comment"># 主题跟随系统深色模式自动切换</span>
+<span class="tok-key">theme</span> = light:Catppuccin Latte,dark:Catppuccin Mocha
+
+<span class="tok-comment"># 背景透明度（0.0 ~ 1.0）</span>
+<span class="tok-key">background-opacity</span> = 0.88
+
+<span class="tok-comment"># 背景模糊（配合透明度使用，毛玻璃效果）</span>
+<span class="tok-key">background-blur</span> = 20
+
+<span class="tok-comment"># 背景图片（可选，放一张喜欢的图，终端瞬间好看）</span>
+<span class="tok-comment"># background-image = ~/Pictures/wallpaper.png</span>
+<span class="tok-comment"># background-image-opacity = 0.3</span>
+<span class="tok-comment"># background-image-fit = cover</span>
+
+<span class="tok-comment"># 标题栏集成 Tab 栏（比 hidden 多了 Tab 支持）</span>
+<span class="tok-key">macos-titlebar-style</span> = tabs
+
+<span class="tok-comment"># 非活跃分屏的透明度（让你一眼看出焦点在哪）</span>
+<span class="tok-key">unfocused-split-opacity</span> = 0.9
+
+<span class="tok-comment"># --- 字体 ---</span>
+<span class="tok-comment"># 推荐 Maple Mono NF CN（brew install --cask font-maple-mono-nf-cn）</span>
+<span class="tok-key">font-family</span> = <span class="tok-string">&quot;Maple Mono NF CN&quot;</span>
+<span class="tok-key">font-size</span> = 14
+<span class="tok-key">font-thicken</span> = true
+
+<span class="tok-comment"># 连字支持</span>
+<span class="tok-key">font-feature</span> = calt
+<span class="tok-key">font-feature</span> = liga
+
+<span class="tok-comment"># --- 窗口行为 ---</span>
+<span class="tok-comment"># 永远记住窗口状态（分屏、Tab、目录）</span>
+<span class="tok-key">window-save-state</span> = always
+
+<span class="tok-comment"># 新分屏继承当前目录</span>
+<span class="tok-key">window-inherit-working-directory</span> = true
+
+<span class="tok-comment"># 新窗口继承字体大小</span>
+<span class="tok-key">window-inherit-font-size</span> = true
+
+<span class="tok-comment"># 内边距</span>
+<span class="tok-key">window-padding-x</span> = 4
+<span class="tok-key">window-padding-y</span> = 4
+<span class="tok-key">window-padding-balance</span> = true
+
+<span class="tok-comment"># --- Quick Terminal（下拉终端） ---</span>
+<span class="tok-key">keybind</span> = global:ctrl+grave_accent=toggle_quick_terminal
+<span class="tok-key">quick-terminal-screen</span> = main
+<span class="tok-key">quick-terminal-position</span> = top
+<span class="tok-key">quick-terminal-size</span> = 50%
+<span class="tok-key">quick-terminal-autohide</span> = true
+<span class="tok-key">quick-terminal-animation-duration</span> = 0.15
+
+<span class="tok-comment"># --- Shell 集成 ---</span>
+<span class="tok-comment"># 自动注入 shell 集成（光标样式、sudo、标题、SSH terminfo）</span>
+<span class="tok-key">shell-integration-features</span> = cursor,sudo,title,ssh-terminfo,ssh-env
+
+<span class="tok-comment"># --- 滚动 ---</span>
+<span class="tok-comment"># 滚动缓冲区大小，单位是字节（默认 10MB，这里设为 50MB）</span>
+<span class="tok-key">scrollback-limit</span> = 50000000
+
+<span class="tok-comment"># --- 光标 ---</span>
+<span class="tok-key">cursor-style</span> = block
+<span class="tok-key">cursor-style-blink</span> = false
+
+<span class="tok-comment"># 鼠标隐藏（打字时自动隐藏鼠标）</span>
+<span class="tok-key">mouse-hide-while-typing</span> = true
+
+<span class="tok-comment"># --- 剪贴板 ---</span>
+<span class="tok-comment"># 选中即复制到系统剪贴板（和 iTerm2 一样）</span>
+<span class="tok-key">copy-on-select</span> = clipboard
+
+<span class="tok-comment"># 复制时自动去除行尾空格</span>
+<span class="tok-key">clipboard-trim-trailing-spaces</span> = true
+
+<span class="tok-comment"># --- macOS 专属 ---</span>
+<span class="tok-comment"># 退出时不弹确认框（如果你习惯了 Cmd+Q）</span>
+<span class="tok-key">confirm-close-surface</span> = false
+
+<span class="tok-comment"># Option 键作为 Alt 使用（对 vim/emacs 用户很重要）</span>
+<span class="tok-key">macos-option-as-alt</span> = true</code></pre>
+<p><strong>使用方法：</strong></p>
+<p>在 Ghostty 里按 Cmd + , 打开配置文件，把上面的内容粘贴进去，保存。然后按 Cmd + Shift + , 重载配置，搞定。</p>
+<p>别忘了装字体：</p>
+<pre data-language="bash"><span class="code-block-toolbar"><span class="code-block-language">bash</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code class="language-bash">brew <span class="tok-accent">install</span> --cask font-maple-mono-nf-cn</code></pre>
+<h2 id="写在最后">写在最后</h2>
+<p>到这里你的 Ghostty 应该已经跑起来了——主题跟着系统走、分屏随手开、Quick Terminal 一键呼出。比起 iTerm2，你大概能明显感觉到渲染更跟手，滚动更丝滑。</p>
+<p>快去尝试下吧，有什么问题和意见直接评论区回复即可，非常感谢。</p>
+    </div>
+    
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <a href="https://obsidian.md/publish" target="_blank" rel="noreferrer">Powered by Obsidian Publish</a>
+    </footer>
+  </div>
+  <div class="scrim"></div>
+  <script src="../assets/search-index.js?v=1773978725932651843"></script>
+  <script src="../assets/app.js?v=1773978725932533925"></script>
+</body>
+</html>
