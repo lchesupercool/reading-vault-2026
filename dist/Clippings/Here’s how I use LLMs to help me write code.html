@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Here’s how I use LLMs to help me write code · Reading Vault 2026</title>
+  <link rel="stylesheet" href="../assets/site.css?v=1774103194627730943">
+</head>
+<body class="theme-light page-doc" data-root-prefix="../">
+  <div class="mobile-bar">
+    <button class="mobile-menu" type="button" aria-label="打开导航">☰</button>
+    <div class="mobile-title">Here’s how I use LLMs to help me write code</div>
+  </div>
+  <div class="published-container has-navigation is-readable-line-width">
+    <div class="site-body">
+      <aside class="site-nav site-body-left-column">
+        
+    <div class="site-body-left-column-inner">
+      <a class="nav-site-title site-body-left-column-site-name" href="../index.html">Reading Vault 2026</a>
+      <div class="site-body-left-column-site-theme-toggle">
+        <button class="theme-toggle checkbox-container" type="button" aria-label="切换明暗模式">
+          <span class="option mod-dark" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="4"></circle>
+              <path d="M12 2v2.4M12 19.6V22M4.93 4.93l1.7 1.7M17.37 17.37l1.7 1.7M2 12h2.4M19.6 12H22M4.93 19.07l1.7-1.7M17.37 6.63l1.7-1.7"></path>
+            </svg>
+          </span>
+          <span class="option mod-light" aria-hidden="true">
+            <svg viewBox="0 0 24 24">
+              <path d="M20 15.2A7.9 7.9 0 0 1 8.8 4 8.9 8.9 0 1 0 20 15.2Z"></path>
+            </svg>
+          </span>
+        </button>
+      </div>
+      <div class="nav-search-wrap">
+        <input class="nav-search" type="search" placeholder="Search page or heading...">
+        <div class="search-results"></div>
+      </div>
+    <div class="nav-tree nav-view-outer"><div class="nav-view"><div class="tree-section"><a class="tree-home-link" href="../index.html">START HERE</a></div><div class="tree-folder"><div class="tree-folder-header"><button class="tree-toggle" type="button" aria-expanded="true" aria-label="展开或收起文件夹">▾</button><a class="tree-folder-link" href="index.html">Clippings</a></div><div class="tree-children"><a class="tree-note-link" href="Ghostty 终端入门指南：安装、配置、用起来.html">Ghostty 终端入门指南：安装、配置、用起来</a><a class="tree-note-link is-active" href="Here’s how I use LLMs to help me write code.html">Here’s how I use LLMs to help me write code</a><a class="tree-note-link" href="Not all AI-assisted programming is vibe coding (but vibe coding rocks).html">Not all AI-assisted programming is vibe coding (but vibe coding rocks)</a><a class="tree-note-link" href="分享10个你可能不知道的Claude Code隐藏命令。.html">分享10个你可能不知道的Claude Code隐藏命令。</a><a class="tree-note-link" href="让 AI 一劳永逸的读懂代码 - deep-code-reader skills.html">让 AI 一劳永逸的读懂代码 - deep-code-reader skills</a></div></div></div></div></div>
+      </aside>
+      <div class="site-body-center-column">
+        <main class="site-main publish-renderer">
+          <div class="site-content markdown-preview-view markdown-rendered">
+            <div class="markdown-preview-sizer">
+              
+    <div class="breadcrumbs"><a href="../index.html">START HERE</a><span>/</span><a href="index.html">Clippings</a></div>
+    <h1 class="page-header">Here’s how I use LLMs to help me write code</h1>
+    <div class="article-meta"><span class="article-meta-line">Author: Simon Willison</span><span class="article-meta-line">Source: <a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/" target="_blank" rel="noreferrer">https://simonwillison.net/2025/Mar/11/using-llms-for-code/</a></span></div>
+    <div class="doc-body">
+      <p>11th March 2025</p>
+<p>Online discussions about inevitably produce comments from developers who’s experiences have been disappointing. They often ask what they’re doing wrong—how come some people are reporting such great results when their own experiments have proved lacking?</p>
+<p>Using LLMs to write code is <strong>difficult</strong> and <strong>unintuitive</strong>. It takes significant effort to figure out the sharp and soft edges of using them in this way, and there’s precious little guidance to help people figure out how best to apply them.</p>
+<p>If someone tells you that coding with LLMs is <em>easy</em> they are (probably unintentionally) misleading you. They may well have stumbled on to patterns that work, but those patterns do not come naturally to everyone.</p>
+<p>I’ve been getting great results out of LLMs for code for over two years now. Here’s my attempt at transferring some of that experience and intution to you.</p>
+<ul><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#set-reasonable-expectations" target="_blank" rel="noreferrer">Set reasonable expectations</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#account-for-training-cut-off-dates" target="_blank" rel="noreferrer">Account for training cut-off dates</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#context-is-king" target="_blank" rel="noreferrer">Context is king</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#ask-them-for-options" target="_blank" rel="noreferrer">Ask them for options</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#tell-them-exactly-what-to-do" target="_blank" rel="noreferrer">Tell them exactly what to do</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#you-have-to-test-what-it-writes-" target="_blank" rel="noreferrer">You have to test what it writes!</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#remember-it-s-a-conversation" target="_blank" rel="noreferrer">Remember it’s a conversation</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#use-tools-that-can-run-the-code-for-you" target="_blank" rel="noreferrer">Use tools that can run the code for you</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#vibe-coding-is-a-great-way-to-learn" target="_blank" rel="noreferrer">Vibe-coding is a great way to learn</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#a-detailed-example" target="_blank" rel="noreferrer">A detailed example using Claude Code</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#be-ready-for-the-human-to-take-over" target="_blank" rel="noreferrer">Be ready for the human to take over</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#the-biggest-advantage-is-speed-of-development" target="_blank" rel="noreferrer">The biggest advantage is speed of development</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#llms-amplify-existing-expertise" target="_blank" rel="noreferrer">LLMs amplify existing expertise</a></li><li><a href="https://simonwillison.net/2025/Mar/11/using-llms-for-code/#bonus-answering-questions-about-codebases" target="_blank" rel="noreferrer">Bonus: answering questions about codebases</a></li></ul>
+<h4 id="set-reasonable-expectations">Set reasonable expectations</h4>
+<p>Ignore the “AGI” hype—LLMs are still fancy autocomplete. All they do is predict a sequence of tokens—but it turns out writing code is mostly about stringing tokens together in the right order, so they can be <em>extremely</em> useful for this provided you point them in the right direction.</p>
+<p>If you assume that this technology will implement your project perfectly without you needing to exercise any of your own skill you’ll quickly be disappointed.</p>
+<p>Instead, use them to <em>augment</em> your abilities. My current favorite mental model is to think of them as an over-confident pair programming assistant who’s lightning fast at looking things up, can churn out relevant examples at a moment’s notice and can execute on tedious tasks without complaint.</p>
+<p><strong>Over-confident</strong> is important. They’ll absolutely make mistakes—sometimes subtle, sometimes huge. These mistakes can be <a href="https://simonwillison.net/2025/Mar/2/kellan-elliott-mccrea/" target="_blank" rel="noreferrer">deeply inhuman</a> —if a human collaborator hallucinated a non-existent library or method you would instantly lose trust in them.</p>
+<p><strong>Don’t fall into the trap of anthropomorphizing LLMs and assuming that failures which would discredit a human should discredit the machine in the same way.</strong></p>
+<p>When working with LLMs you’ll often find things that they just cannot do. Make a note of these—they are useful lessons! They’re also valuable examples to stash away for the future—a sign of a strong new model is when it produces usable results for a task that previous models had been unable to handle.</p>
+<h4 id="account-for-training-cut-off-dates">Account for training cut-off dates</h4>
+<p>A crucial characteristic of any model is its <strong>training cut-off date</strong>. This is the date at which the data they were trained on stopped being collected. For OpenAI’s models this is usually October 2023 or May 2024. Other providers may have more recent dates.</p>
+<p>This is <em>extremely</em> important for code, because it influences what libraries they will be familiar with. If the library you are using had a major breaking change since October 2023, some OpenAI models won’t know about it!</p>
+<p>I gain enough value from LLMs that I now deliberately consider this when picking a library—I try to stick with libraries with good stability and that are popular enough that many examples of them will have made it into the training data. I like applying the principles of <a href="https://boringtechnology.club/" target="_blank" rel="noreferrer">boring technology</a> —innovate on your project’s unique selling points, stick with tried and tested solutions for everything else.</p>
+<p>LLMs can still help you work with libraries that exist outside their training data, but you need to put in more work—you’ll need to feed them recent examples of how those libraries should be used as part of your prompt.</p>
+<p>This brings us to the most important thing to understand when working with LLMs:</p>
+<h4 id="context-is-king">Context is king</h4>
+<p>Most of the craft of getting good results out of an LLM comes down to managing its context—the text that is part of your current conversation.</p>
+<p>This context isn’t just the prompt that you have fed it: successful LLM interactions usually take the form of conversations, and the context consists of every message from you <em>and</em> every reply from the LLM that exist in the current conversation thread.</p>
+<p>When you start a new conversation you reset that context back to zero. This is important to know, as often the fix for a conversation that has stopped being useful is to wipe the slate clean and start again.</p>
+<p>Some LLM coding tools go beyond just the conversation. Claude Projects for example allow you to pre-populate the context with quite a large amount of text—including a recent ability to <a href="https://support.anthropic.com/en/articles/10167454-using-the-github-integration" target="_blank" rel="noreferrer">import code directly from a GitHub</a> repository which I’m using a <em>lot</em>.</p>
+<p>Tools like Cursor and VS Code Copilot include context from your current editor session and file layout automatically, and you can sometimes use mechanisms like <a href="https://docs.cursor.com/context/@-symbols/overview" target="_blank" rel="noreferrer">Cursor’s @commands</a> to pull in additional files or documentation.</p>
+<p>One of the reasons I mostly work directly with the <a href="https://chatgpt.com/" target="_blank" rel="noreferrer">ChatGPT</a> and <a href="https://claude.ai/" target="_blank" rel="noreferrer">Claude</a> web or app interfaces is that it makes it easier for me to understand exactly what is going into the context. LLM tools that obscure that context from me are <em>less</em> effective.</p>
+<p>You can use the fact that previous replies are also part of the context to your advantage. For complex coding tasks try getting the LLM to write a simpler version first, check that it works and then iterate on building to the more sophisticated implementation.</p>
+<p>I often start a new chat by dumping in existing code to seed that context, then work with the LLM to modify it in some way.</p>
+<p>One of my favorite code prompting techniques is to drop in several full examples relating to something I want to build, then prompt the LLM to use them as inspiration for a new project. I wrote about that in detail when I <a href="https://simonwillison.net/2024/Mar/30/ocr-pdfs-images/" target="_blank" rel="noreferrer">described my JavaScript OCR application</a> that combines Tesseract.js and PDF.js—two libraries I had used in the past and for which I could provide working examples in the prompt.</p>
+<h4 id="ask-them-for-options">Ask them for options</h4>
+<p>Most of my projects start with some open questions: is the thing I’m trying to do possible? What are the potential ways I could implement it? Which of those options are the <em>best</em>?</p>
+<p>I use LLMs as part of this initial research phase.</p>
+<p>I’ll use prompts like “what are options for HTTP libraries in Rust? Include usage examples”—or “what are some useful drag-and-drop libraries in JavaScript? Build me an artifact demonstrating each one” (to Claude).</p>
+<p>The training cut-off is relevant here, since it means newer libraries won’t be suggested. Usually that’s OK—I don’t want the latest, I want the most stable and the one that has been around for long enough for the bugs to be ironed out.</p>
+<p>If I’m going to use something more recent I’ll do that research myself, outside of LLM world.</p>
+<p>The best way to start any project is with a prototype that proves that the key requirements of that project can be met. I often find that an LLM can get me to that working prototype within a few minutes of me sitting down with my laptop—or sometimes even while working on my phone.</p>
+<h4 id="tell-them-exactly-what-to-do">Tell them exactly what to do</h4>
+<p>Once I’ve completed the initial research I change modes dramatically. For production code my LLM usage is much more authoritarian: I treat it like a digital intern, hired to type code for me based on my detailed instructions.</p>
+<p>Here’s a recent example:</p>
+<blockquote><p>Write a Python function that uses asyncio httpx with this signature:</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>async def download_db(url, max_size_bytes=5 * 1025 * 1025): -&gt; pathlib.Path</code></pre>
+<p>Given a URL, this downloads the database to a temp directory and returns a path to it. BUT it checks the content length header at the start of streaming back that data and, if it’s more than the limit, raises an error. When the download finishes it uses <code>sqlite3.connect(...)</code> and then runs a <code>PRAGMA quick_check</code> to confirm the SQLite data is valid—raising an error if not. Finally, if the content length header lies to us— if it says 2MB but we download 3MB—we get an error raised as soon as we notice that problem.</p></blockquote>
+<p>I could write this function myself, but it would take me the better part of fifteen minutes to look up all of the details and get the code working right. Claude knocked it out <a href="https://gist.github.com/simonw/5aed8bd87016c77465c23e0dc4563ec9" target="_blank" rel="noreferrer">in 15 seconds</a>.</p>
+<p>I find LLMs respond extremely well to function signatures like the one I use here. I get to act as the function designer, the LLM does the work of building the body to my specification.</p>
+<p>I’ll often follow-up with “Now write me the tests using pytest”. Again, I dictate my technology of choice—I want the LLM to save me the time of having to type out the code that’s sitting in my head already.</p>
+<p>If your reaction to this is “surely typing out the code is faster than typing out an English instruction of it”, all I can tell you is that it really isn’t for me any more. Code needs to be correct. English has enormous room for shortcuts, and vagaries, and typos, and saying things like “use that popular HTTP library” if you can’t remember the name off the top of your head.</p>
+<p>The good coding LLMs are excellent at filling in the gaps. They’re also much less lazy than me—they’ll remember to catch likely exceptions, add accurate docstrings, and annotate code with the relevant types.</p>
+<h4 id="you-have-to-test-what-it-writes">You have to test what it writes!</h4>
+<p>I wrote about this <a href="https://simonwillison.net/2025/Mar/2/hallucinations-in-code/#qa" target="_blank" rel="noreferrer">at length last week</a>: the one thing you absolutely cannot outsource to the machine is testing that the code actually works.</p>
+<p>Your responsibility as a software developer is to deliver working systems. If you haven’t seen it run, it’s not a working system. You need to invest in strengthening those manual QA habits.</p>
+<p>This may not be glamorous but it’s always been a critical part of shipping good code, with or without the involvement of LLMs.</p>
+<h4 id="remember-its-a-conversation">Remember it’s a conversation</h4>
+<p>If I don’t like what an LLM has written, they’ll <em>never</em> complain at being told to refactor it! “Break that repetitive code out into a function”, “use string manipulation methods rather than a regular expression”, or even “write that better!”—the code an LLM produces first time is rarely the final implementation, but they can re-type it dozens of times for you without ever getting frustrated or bored.</p>
+<p>Occasionally I’ll get a great result from my first prompt—more frequently the more I practice—but I expect to need at least a few follow-ups.</p>
+<p>I often wonder if this is one of the key tricks that people are missing—a bad initial result isn’t a failure, it’s a starting point for pushing the model in the direction of the thing you actually want.</p>
+<p>An increasing number of LLM coding tools now have the ability to <em>run that code</em> for you. I’m slightly cautious about some of these since there’s a possibility of the wrong command causing real damage, so I tend to stick to the ones that run code in a safe sandbox. My favorites right now are:</p>
+<ul><li><strong>ChatGPT Code Interpreter</strong>, where ChatGPT can write and then execute Python code directly in a Kubernetes sandbox VM managed by OpenAI. This is completely safe—it can’t even make outbound network connections so really all that can happen is the temporary filesystem gets mangled and then reset.</li><li><strong>Claude Artifacts</strong>, where Claude can build you a full HTML+JavaScript+CSS web application that is displayed within the Claude interface. This web app is displayed in a <em>very</em> locked down iframe sandbox, greatly restricting what it can do but preventing problems like accidental exfiltration of your private Claude data.</li><li><strong>ChatGPT Canvas</strong> is a newer ChatGPT feature with similar capabilites to Claude Artifacts. I have not explored this enough myself yet.</li></ul>
+<p>And if you’re willing to live a little more dangerously:</p>
+<ul><li><strong><a href="https://www.cursor.com/" target="_blank" rel="noreferrer">Cursor</a></strong> has an “Agent” feature that can do this, as does <strong><a href="https://codeium.com/windsurf" target="_blank" rel="noreferrer">Windsurf</a></strong> and a growing number of other editors. I haven’t spent enough time with these to make recommendations yet.</li><li><strong><a href="https://aider.chat/" target="_blank" rel="noreferrer">Aider</a></strong> is the leading open source implementation of these kinds of patterns, and is a great example of <a href="https://en.wikipedia.org/wiki/Eating_your_own_dog_food" target="_blank" rel="noreferrer">dogfooding</a> —recent releases of Aider have been <a href="https://aider.chat/HISTORY.html" target="_blank" rel="noreferrer">80%+ written</a> by Aider itself.</li><li><strong><a href="https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview" target="_blank" rel="noreferrer">Claude Code</a></strong> is Anthropic’s new entrant into this space. I’ll provide a detailed description of using that tool shortly.</li></ul>
+<p>This run-the-code-in-a-loop pattern is so powerful that I chose my core LLM tools for coding based primarily on whether they can safely run and iterate on my code.</p>
+<h4 id="vibe-coding-is-a-great-way-to-learn">Vibe-coding is a great way to learn</h4>
+<p>Andrej Karpathy <a href="https://simonwillison.net/2025/Feb/6/andrej-karpathy/" target="_blank" rel="noreferrer">coined the term</a> vibe-coding just over a month ago, and it has stuck:</p>
+<blockquote><p>There’s a new kind of coding I call “vibe coding”, where you fully give in to the vibes, embrace exponentials, and forget that the code even exists. \[...\] I ask for the dumbest things like “decrease the padding on the sidebar by half” because I’m too lazy to find it. I “Accept All” always, I don’t read the diffs anymore. When I get error messages I just copy paste them in with no comment, usually that fixes it.</p></blockquote>
+<p>Andrej suggests this is “not too bad for throwaway weekend projects”. It’s also a <em>fantastic</em> way to explore the capabilities of these models—and really fun.</p>
+<p>The best way to learn LLMs is to play with them. Throwing absurd ideas at them and vibe-coding until they almost sort-of work is a genuinely useful way to accelerate the rate at which you build intuition for what works and what doesn’t.</p>
+<p>I’ve been vibe-coding since before Andrej gave it a name! My <a href="https://github.com/simonw/tools" target="_blank" rel="noreferrer">simonw/tools</a> GitHub repository has 77 HTML+JavaScript apps and 6 Python apps, and every single one of them was built by prompting LLMs. I have learned <em>so much</em> from building this collection, and I add to it at a rate of several new prototypes per week.</p>
+<p>You can try most of mine out directly on <a href="https://tools.simonwillison.net/" target="_blank" rel="noreferrer">tools.simonwillison.net</a> —a GitHub Pages published version of the repo. I wrote more detailed notes on some of these back in October in <a href="https://simonwillison.net/2024/Oct/21/claude-artifacts/" target="_blank" rel="noreferrer">Everything I built with Claude Artifacts this week</a>.</p>
+<p>If you want to see the transcript of the chat used for each one it’s almost always linked to in the commit history for that page—or visit the new <a href="https://tools.simonwillison.net/colophon" target="_blank" rel="noreferrer">colophon page</a> for an index that includes all of those links.</p>
+<h4 id="a-detailed-example-using-claude-code">A detailed example using Claude Code</h4>
+<p>While I was writing this article I had the idea for that <a href="https://tools.simonwillison.net/colophon" target="_blank" rel="noreferrer">tools.simonwillison.net/colophon</a> page—I wanted something I could link to that showed the commit history of each of my tools in a more obvious way than GitHub.</p>
+<p>I decided to use that as an opportunity to demonstrate my AI-assisted coding process.</p>
+<p>For this one I used <a href="https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview" target="_blank" rel="noreferrer">Claude Code</a>, because I wanted it to be able to run Python code directly against my existing tools repository on my laptop.</p>
+<p>Running the <code>/cost</code> command at the end of my session showed me this:</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>&gt; /cost 
+  ⎿  Total cost: $0.61
+     Total duration (API): 5m 31.2s
+     Total duration (wall): 17m 18.7s</code></pre>
+<p>The initial project took me just over 17 minutes from start to finish, and cost me 61 cents in API calls to Anthropic.</p>
+<p>I used the authoritarian process where I told the model exactly what I wanted to build. Here’s my sequence of prompts (<a href="https://gist.github.com/simonw/323e1b00ee4f8453c7834a7560eeafc1" target="_blank" rel="noreferrer">full transcript here</a>).</p>
+<p>I started by asking for an initial script to gather the data needed for the new page:</p>
+<blockquote><p>Almost all of the HTML files in this directory were created using Claude prompts, and the details of those prompts are linked in the commit messages. Build a Python script that checks the commit history for each HTML file in turn and extracts any URLs from those commit messages into a list. It should then output a JSON file with this structure: {“pages”: {“name-of-file.html”: \[“url”\], {“name-of-file-2.html”: \[“url1”, “url2”\],...—as you can see, some files may have more than one URL in their commit history. The script should be called gather\_links.py and it should save a JSON file called gathered\_links.json</p></blockquote>
+<p>I really didn’t think very hard about this first prompt—it was more of a stream of consciousness that I typed into the bot as I thought about the initial problem.</p>
+<p>I inspected the initial result and spotted some problems:</p>
+<blockquote><p>It looks like it just got the start of the URLs, it should be getting the whole URLs which might be to different websites—so just get anything that starts https:// and ends with whitespace or the end of the commit message</p></blockquote>
+<p>Then I changed my mind—I wanted those full commit messages too:</p>
+<blockquote><p>Update the script—I want to capture the full commit messages AND the URLs—the new format should be {“pages”: {“aria-live-regions.html”: {“commits”: \[{“hash”: hash, “message”: message, “date”: iso formatted date\], “urls”: \[list of URLs like before\]</p></blockquote>
+<p>Providing examples like this is a great shortcut to getting exactly what you want.</p>
+<p>Note that at no point have I looked at the code it’s written in <a href="https://github.com/simonw/tools/blob/87e2577983f11fc9c7bf7b7a268cf2404a21e1c5/gather_links.py" target="_blank" rel="noreferrer">gather\_links.py</a>! This is pure vibe-coding: I’m looking at what it’s doing, but I’ve left the implementation details entirely up to the LLM.</p>
+<p>The JSON looked good to me, so I said:</p>
+<blockquote><p>This is working great. Write me a new script called build\_colophon.py which looks through that gathered JSON file and builds and saves an HTML page. The page should be mobile friendly and should list every page—with a link to that page—and for each one display the commit messages neatly (convert newlines to br and linkify URLs but no other formatting)—plus the commit message dates and links to the commits themselves which are in <a href="https://github.com/simonw/tools" target="_blank" rel="noreferrer">https://github.com/simonw/tools</a></p></blockquote>
+<p>Claude knows how GitHub URLs works, so telling it to link to the commits and providing the repo name was enough for it guess <code>https://github.com/simonw/tools/commit/fd9daf885c924ba277806b3440457d52b0ad90a8</code> for those commit URLs.</p>
+<p>I tend to find Claude has good default taste when it comes to web page design—I said “the page should be mobile friendly” and left it at that.</p>
+<p>Claude churned away and built me a page that wasn’t right, so I said:</p>
+<blockquote><p>it’s not working right. ocr.html had a bunch of commits but in colophon.html there is only one link and heading for the first commit and the rest are shown within that same block—there should be separate HTML chunks with links and formatted dates for each of the other commits. Also the neatly formatted date should include the HH:MM as well as the date</p></blockquote>
+<p>It fixed the bug all on its own, leaving just two changes I decided to make:</p>
+<blockquote><p>it’s almost perfect, but each page should have the commits displayed in the opposite order—oldest first</p></blockquote>
+<p>And then:</p>
+<blockquote><p>One last change—the pages are currently listed alphabetically, lets instead list them with the most recently modified at the top</p></blockquote>
+<p>And that was the entire project! Here’s <a href="https://github.com/simonw/tools/blob/1e04f12a1cacea8856946162457d0d77e60ee549/build_colophon.py" target="_blank" rel="noreferrer">build\_colophon.py</a>, and the page it generated came out <a href="https://static.simonwillison.net/static/2025/colophon.html" target="_blank" rel="noreferrer">looking pretty good</a>:</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://static.simonwillison.net/static/2025/colophon.jpg" alt="Tools Colophon. This page documents the creation of the tools on tools.simonwillison.net, including links to the Claude conversations used to build them. social-media-cropper.html b4a2bc December 10, 2024 20:35 Social media cropper  https://gist.github.com/simonw/12b8f88932a71450071190e1289a17e9 a10954 February 28, 2025 16:02 Support 2:1 and 14:10 ratios  https://gist.github.com/simonw/e23917eddcbb368c9b6180d581f8f40a" loading="lazy"></span></p>
+<p>There was one remaining task: I needed to deploy the new colophon as part of my site, but I didn’t want to check that new <code>colophon.html</code> page into the repository itself. I wanted a custom GitHub Pages build process.</p>
+<p>I started a brand new Claude Code session (clearing the slate) to see if that was something Claude could figure out too:</p>
+<blockquote><p>This repo is deployed using GitHub Pages. I want to modify the build slightly—before deploying to GitHub Pages it should run python gather\_links.py which will generate a file called gathered\_links.json—then it should run python build\_colophon.py which will use that file to create colophon.html—I want both gathered\_links.json and colophon.html to be published to GitHub pages but I do not want them checked into the repo itself</p></blockquote>
+<p>Unlike the first time, this time I watched what it was doing very closely—I don’t know how to customize GitHub Pages builds in this way and I wanted to both learn how to do it and stay cautious that it might hallucinate details and fail at the task.</p>
+<p>It told me it wanted to create this file and asked for my permission:</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>name: Deploy to GitHub Pages
+
+on:
+  # Run on push to main branch
+  push:
+    branches: [ main ]
+  # Allow manual trigger
+  workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Need full history for git log in gather_links.py
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: &#x27;3.12&#x27;
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+
+      - name: Generate links and build colophon
+        run: |
+          python gather_links.py
+          python build_colophon.py
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Build with Jekyll
+        uses: actions/jekyll-build-pages@v1
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4</code></pre>
+<p>I guess that’s right? I appreciated that comment about “Need full history for git log in gather\_links.py”—that’s something I could easily have missed.</p>
+<p>Then it said it wanted to add those files to <code>.gitignore</code> —sounds like a good idea.</p>
+<p>It spat out this summary of its actions so far:</p>
+<blockquote><p>I’ve created a GitHub Actions workflow for GitHub Pages that:</p>
+<ol><li>Creates a.github/workflows/pages.yml file that:<ul><li>Runs on pushes to main branch<ul><li>Checkouts the full git history (needed for gather\_links.py)</li><li>Sets up Python 3.12</li><li>Runs both scripts in sequence to generate the files</li><li>Builds and deploys to GitHub Pages</li></ul></li></ul></li><li>Created.gitignore file to prevent the generated files from being committed</li></ol>
+<p>Now when you push to main, GitHub Actions will:</p>
+<ul><li>Run the gather\_links.py script to create gathered\_links.json</li><li>Run build\_colophon.py to create colophon.html</li><li>Deploy both files (and all other files) to GitHub Pages</li></ul></blockquote>
+<p>I checked to see how much it had cost:</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>&gt; /cost 
+  ⎿  Total cost: $0.1788
+     Total duration (API): 44.6s
+     Total duration (wall): 10m 18.6s</code></pre>
+<p>So 17 cents and 45 seconds using the Claude API. (I got distracted, hence the 10m of total time.) Here’s the <a href="https://gist.github.com/simonw/a560b07eef577e6183021d1ccaae7e07" target="_blank" rel="noreferrer">full transcript</a>.</p>
+<p>The code didn’t look like it would irreversibly break anything, so I pushed it to GitHub to see what would happen.</p>
+<p>... and it worked! My new <a href="https://tools.simonwillison.net/colophon" target="_blank" rel="noreferrer">colophon page</a> was live.</p>
+<p>There’s a catch. I watched the <a href="https://github.com/simonw/tools/actions" target="_blank" rel="noreferrer">GitHub Actions</a> interface while it was running and something didn’t look right:</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://static.simonwillison.net/static/2025/github-actions-colophon.jpg" alt="GitHub Actions interface showing three completed actions. Test for Custom pages workflow for colophon,2 Deploy for that same name and another one called pages-build-deployment." loading="lazy"></span></p>
+<p>I was expecting that “Test” job, but why were there two separate deploys?</p>
+<p>I had a hunch that the previous, default Jekyll deploy was still running, while the new deploy ran at the same time—and it was pure luck of the timing that the new script finished later and over-wrote the result of the original.</p>
+<p>It was time to ditch the LLMs and read some documentation!</p>
+<p>I found this page on <a href="https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages" target="_blank" rel="noreferrer">Using custom workflows with GitHub Pages</a> but it didn’t tell me what I needed to know.</p>
+<p>On another hunch I checked the GitHub Pages settings interface for my repo and found this option:</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://static.simonwillison.net/static/2025/github-pages-settings.jpg" alt="GitHub Pages UI - shows your site is live at tools.simonwillison.net, deployed 7 minutes ago. - then under Buyld and deployment a source menu shows options for GitHub Actions or for Deploy from a branch (selected)" loading="lazy"></span></p>
+<p>My repo was set to “Deploy from a branch”, so I switched that over to “GitHub Actions”.</p>
+<p>I manually updated my <code>README.md</code> to add a link to the new Colophon page in <a href="https://github.com/simonw/tools/commit/4ee15aaad8e9a412505210a30f485528cb3c0390" target="_blank" rel="noreferrer">this commit</a>, which triggered another build.</p>
+<p>This time only two jobs ran, and the end result was the correctly deployed site:</p>
+<p><span class="asset-embed asset-embed-image"><img class="doc-image" src="https://static.simonwillison.net/static/2025/github-actions-colophon-2.jpg" alt="Only two in-progress workflows now, one is the Test one and the other is the Deploy to GitHub Pages one." loading="lazy"></span></p>
+<p>(I later spotted another bug—some of the links inadvertently included <code>&lt;br&gt;</code> tags in their <code>href=</code>, which I <a href="https://github.com/simonw/tools/commit/87e2577983f11fc9c7bf7b7a268cf2404a21e1c5" target="_blank" rel="noreferrer">fixed</a> with another <a href="https://gist.github.com/simonw/d5ccbca1b530868980609222790a97cb" target="_blank" rel="noreferrer">11 cent Claude Code session</a>.)</p>
+<p><strong>Update</strong>: I improved the colophon further by <a href="https://simonwillison.net/2025/Mar/13/tools-colophon/" target="_blank" rel="noreferrer">adding AI-generated descriptions of the tools</a>.</p>
+<h4 id="be-ready-for-the-human-to-take-over">Be ready for the human to take over</h4>
+<p>I got lucky with this example because it helped illustrate my final point: expect to need to take over.</p>
+<p>LLMs are no replacement for human intuition and experience. I’ve spent enough time with GitHub Actions that I know what kind of things to look for, and in this case it was faster for me to step in and finish the project rather than keep on trying to get there with prompts.</p>
+<h4 id="the-biggest-advantage-is-speed-of-development">The biggest advantage is speed of development</h4>
+<p>My new <a href="https://tools.simonwillison.net/colophon" target="_blank" rel="noreferrer">colophon page</a> took me just under half an hour from conception to finished, deployed feature.</p>
+<p>I’m certain it would have taken me significantly longer without LLM assistance—to the point that I probably wouldn’t have bothered to build it at all.</p>
+<p><em>This</em> is why I care so much about the productivity boost I get from LLMs so much: it’s not about getting work done faster, it’s about being able to ship projects that I wouldn’t have been able to justify spending time on at all.</p>
+<p>I wrote about this in March 2023: <a href="https://simonwillison.net/2023/Mar/27/ai-enhanced-development/" target="_blank" rel="noreferrer">AI-enhanced development makes me more ambitious with my projects</a>. Two years later that effect shows no sign of wearing off.</p>
+<p>It’s also a great way to accelerate learning new things—today that was how to customize my GitHub Pages builds using Actions, which is something I’ll certainly use again in the future.</p>
+<p>The fact that LLMs let me execute my ideas faster means I can implement more of them, which means I can learn even more.</p>
+<h4 id="llms-amplify-existing-expertise">LLMs amplify existing expertise</h4>
+<p>Could anyone else have done this project in the same way? Probably not! My prompting here leaned on 25+ years of professional coding experience, including my previous explorations of GitHub Actions, GitHub Pages, GitHub itself and the LLM tools I put into play.</p>
+<p>I also <em>knew</em> that this was going to work. I’ve spent enough time working with these tools that I was confident that assembling a new HTML page with information pulled from my Git history was entirely within the capabilities of a good LLM.</p>
+<p>My prompts reflected that—there was nothing particularly novel here, so I dictated the design, tested the results as it was working and occasionally nudged it to fix a bug.</p>
+<p>If I was trying to build a Linux kernel driver—a field I know virtually nothing about—my process would be entirely different.</p>
+<h4 id="bonus-answering-questions-about-codebases">Bonus: answering questions about codebases</h4>
+<p>If the idea of using LLMs to write code for you still feels deeply unappealing, there’s another use-case for them which you may find more compelling.</p>
+<p>Good LLMs are <em>great</em> at answering questions about code.</p>
+<p>This is also very low stakes: the worst that can happen is they might get something wrong, which may take you a tiny bit longer to figure out. It’s still likely to save you time compared to digging through thousands of lines of code entirely by yourself.</p>
+<p>The trick here is to dump the code into a long context model and start asking questions. My current favorite for this is the catchily titled <code>gemini-2.0-pro-exp-02-05</code>, a preview of Google’s Gemini 2.0 Pro which is currently free to use via their API.</p>
+<p>I used this trick just <a href="https://simonwillison.net/2025/Mar/6/monolith/" target="_blank" rel="noreferrer">the other day</a>. I was trying out a new-to-me tool called <a href="https://github.com/Y2Z/monolith" target="_blank" rel="noreferrer">monolith</a>, a CLI tool written in Rust which downloads a web page and all of its dependent assets (CSS, images etc) and bundles them together into a single archived file.</p>
+<p>I was curious as to how it worked, so I cloned it into my temporary directory and ran these commands:</p>
+<pre><span class="code-block-toolbar"><span class="code-block-language">code</span><button class="code-copy-button" type="button" aria-label="Copy code" title="Copy"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="10" height="10" rx="2"></rect><path d="M15 9V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path></svg></button></span><code>cd /tmp
+git clone https://github.com/Y2Z/monolith
+cd monolith
+
+files-to-prompt . -c | llm -m gemini-2.0-pro-exp-02-05 \
+  -s &#x27;architectural overview as markdown&#x27;</code></pre>
+<p>I’m using my own <a href="https://github.com/simonw/files-to-prompt" target="_blank" rel="noreferrer">files-to-prompt</a> tool (built for me by Claude 3 Opus <a href="https://simonwillison.net/2024/Apr/8/files-to-prompt/" target="_blank" rel="noreferrer">last year</a>) here to gather the contents of all of the files in the repo into a single stream. Then I pipe that into my <a href="https://llm.datasette.io/" target="_blank" rel="noreferrer">LLM</a> tool and tell it (via the <a href="https://github.com/simonw/llm-gemini" target="_blank" rel="noreferrer">llm-gemini</a> plugin) to prompt Gemini 2.0 Pro with a system prompt of “architectural overview as markdown”.</p>
+<p>This gave me back a <a href="https://gist.github.com/simonw/2c80749935ae3339d6f7175dc7cf325b" target="_blank" rel="noreferrer">detailed document</a> describing how the tool works—which source files do what and, crucially, which Rust crates it was using. I learned that it used <code>reqwest</code>, <code>html5ever</code>, <code>markup5ever_rcdom</code> and <code>cssparser</code> and that it doesn’t evaluate JavaScript at all, an important limitation.</p>
+<p>I use this trick several times a week. It’s a great way to start diving into a new codebase—and often the alternative isn’t spending more time on this, it’s failing to satisfy my curiosity at all.</p>
+<p>I included three more examples in <a href="https://simonwillison.net/2025/Feb/14/files-to-prompt/" target="_blank" rel="noreferrer">this recent post</a>.</p>
+<p>Part of series <strong><a href="https://simonwillison.net/series/using-llms/" target="_blank" rel="noreferrer">How I use LLMs and ChatGPT</a></strong></p>
+<ol><li><a href="https://simonwillison.net/2024/Oct/27/llm-jq/" target="_blank" rel="noreferrer">Run a prompt to generate and execute jq programs using llm-jq</a> - Oct. 27, 2024, 4:26 a.m.</li><li><a href="https://simonwillison.net/2024/Dec/7/prompts-js/" target="_blank" rel="noreferrer">Prompts.js</a> - Dec. 7, 2024, 8:35 p.m.</li><li><a href="https://simonwillison.net/2024/Dec/19/one-shot-python-tools/" target="_blank" rel="noreferrer">Building Python tools with a one-shot prompt using uv run and Claude Projects</a> - Dec. 19, 2024, 7 a.m.</li><li><strong>Here&#x27;s how I use LLMs to help me write code</strong> - March 11, 2025, 2:09 p.m.</li><li><a href="https://simonwillison.net/2025/Mar/19/vibe-coding/" target="_blank" rel="noreferrer">Not all AI-assisted programming is vibe coding (but vibe coding rocks)</a> - March 19, 2025, 5:57 p.m.</li><li><a href="https://simonwillison.net/2025/Apr/21/ai-assisted-search/" target="_blank" rel="noreferrer">AI assisted search-based research actually works now</a> - April 21, 2025, 12:57 p.m.</li><li><a href="https://simonwillison.net/2025/May/21/chatgpt-new-memory/" target="_blank" rel="noreferrer">I really don&#x27;t like ChatGPT&#x27;s new memory dossier</a> - May 21, 2025, 2:38 p.m.</li><li><a href="https://simonwillison.net/series/using-llms/" target="_blank" rel="noreferrer">… more</a></li></ol>
+<p><strong>Next:</strong> <a href="https://simonwillison.net/2025/Mar/12/gemma-3/" target="_blank" rel="noreferrer">Notes on Google&#x27;s Gemma 3</a></p>
+<p><strong>Previous:</strong> <a href="https://simonwillison.net/2025/Mar/8/nicar-llms/" target="_blank" rel="noreferrer">What&#x27;s new in the world of LLMs, for NICAR 2025</a></p>
+<h3 id="monthly-briefing">Monthly briefing</h3>
+<p>Sponsor me for <strong>$10/month</strong> and get a curated email digest of the month&#x27;s most important LLM developments.</p>
+<p>Pay me to send you less!</p>
+<p><a href="https://github.com/sponsors/simonw/" target="_blank" rel="noreferrer">Sponsor &amp; subscribe</a></p>
+<p>已收藏 <span class="asset-embed asset-embed-image"><img class="doc-image" src="https://static.simonwillison.net/static/2025/colophon.jpg" alt="image" loading="lazy"></span></p>
+<p>Here’s how I use LLMs to help me write code</p>
+<p>simonwillison.net</p>
+    </div>
+    
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+    <footer class="site-footer">
+      <a href="https://obsidian.md/publish" target="_blank" rel="noreferrer">Powered by Obsidian Publish</a>
+    </footer>
+  </div>
+  <div class="scrim"></div>
+  <script src="../assets/search-index.js?v=1774103194628061235"></script>
+  <script src="../assets/app.js?v=1774103194627921277"></script>
+</body>
+</html>
